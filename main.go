@@ -51,6 +51,7 @@ func getDomainInfo(c *gin.Context) {
 
 // We create the router outside of main() so that it can also be used for testing
 func setupRouter() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.GET("/:domain", getDomainInfo)
 	return r
@@ -63,5 +64,6 @@ func main() {
 		log.Fatalln("Failed to load required environment variables")
 	}
 	r := setupRouter()
-	r.Run("localhost:8080")
+	r.Run(":8080") // for local deployment
+	//log.Fatalln(autotls.Run(r, "example.com")) // for remote deployment
 }
