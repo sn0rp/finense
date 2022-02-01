@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/graphql-go/graphql v0.8.0 // indirect
 	github.com/ipfs/go-cid v0.0.7 // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.6 // indirect
 	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
