@@ -7,7 +7,7 @@ import (
 
 func CheckErr(err error) {
 	if err != nil {
-		log.Fatalln("Generic error occurred")
+		panic(err)
 	}
 }
 
@@ -16,7 +16,7 @@ func DomainExistsErr(err error) bool {
 		if err.Error() == "unregistered name" {
 			return true
 		}
-		log.Fatalln(err)
+		log.Fatalln(err) // This should never happen
 	}
 	return false
 }

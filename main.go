@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,6 +9,7 @@ import (
 	"github.com/snorper/finense/ensquery"
 )
 
+// Contains all data to be returned by the API
 type ensUser struct {
 	Domain string `json:"domain"`
 	Addr   string `json:"addr"`
@@ -15,6 +17,13 @@ type ensUser struct {
 	Usd    string `json:"usd"`
 }
 
+/*
+We only need to handle GET requests for a given domain, as we do not want
+users to directly interact with the Ethereum Mainnet under any circumstances.
+The purpose of this API is simply to provide the amount of ETH owned and its
+value in USD. This holds for all currencies and tokens which come to be
+supported by Finense in the future.
+*/
 func getDomainInfo(c *gin.Context) {
 	userDomain := c.Param("domain")
 	if !ensquery.IsENSDomain(userDomain) {
@@ -24,6 +33,10 @@ func getDomainInfo(c *gin.Context) {
 	userAddr := ensquery.ENSInit(userDomain)
 	if userAddr == "unregistered" {
 		c.String(http.StatusNotFound, "%s is not a registered .eth domain", userDomain)
+		return
+	}
+	if userAddr == "Unable to connect to Infura" {
+		c.String(http.StatusBadGateway, "Unable to query API, please try again later")
 		return
 	}
 	userEth, userUsd := ensquery.GetEthBalance(userAddr)
@@ -36,15 +49,19 @@ func getDomainInfo(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, user)
 }
 
+// We create the router outside of main() so that it can also be used for testing
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/:domain", getDomainInfo)
 	return r
 }
 
+// Run server
 func main() {
 	err := godotenv.Load()
-	ensquery.CheckErr(err)
+	if err != nil {
+		log.Fatalln("Failed to load required environment variables")
+	}
 	r := setupRouter()
 	r.Run("localhost:8080")
 }

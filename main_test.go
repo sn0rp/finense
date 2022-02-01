@@ -13,6 +13,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Testing for all potential endpoints
+// We should only accept registered .eth domains
+
 func TestEmpty(t *testing.T) {
 	router := setupRouter()
 	w := httptest.NewRecorder()

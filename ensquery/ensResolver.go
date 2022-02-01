@@ -1,20 +1,22 @@
 package ensquery
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/machinebox/graphql"
 	ens "github.com/wealdtech/go-ens/v3"
 )
 
+// Connect and resolve Ethereum address
+// Requires Infura Project ID
 func ENSInit(domain string) string {
 	PID := os.Getenv("INFURA_PROJECT_ID")
 
 	client, err := ethclient.Dial(fmt.Sprintf("https://mainnet.infura.io/v3/%s", PID))
-	CheckErr(err)
+	if err != nil {
+		return "Unable to connect to Infura"
+	}
 
 	address, err := ens.Resolve(client, domain)
 	if DomainExistsErr(err) {
@@ -24,6 +26,9 @@ func ENSInit(domain string) string {
 	return address.Hex()
 }
 
+/*
+// Returns all coin IDs which can then be resolved to addresses
+// Will be implemented in conjunction with address decoding for each address type
 func getAllCoinTypes(domain string) []string {
 	graphqlClient := graphql.NewClient("https://api.thegraph.com/subgraphs/name/ensdomains/ens")
 
@@ -53,9 +58,10 @@ func getAllCoinTypes(domain string) []string {
 
 	return coinTypes
 }
+*/
 
 /*
-	We will eventually return values for all coin types supported by ENS.
+	We will eventually return values for all address types supported by ENS.
 	This will however take additional time due to differences in encoding.
 	Commented here is the basis for a hypothetical "Return all coin types" function.
 
