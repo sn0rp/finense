@@ -10,6 +10,25 @@ import (
 	"strconv"
 )
 
+type ethBalance struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Result  string `json:"result"`
+}
+
+type ethConv struct {
+	Ethbtc           string `json:"ethbtc"`
+	Ethbtc_timestap  string `json:"ethbtc_timestamp"`
+	Ethusd           string `json:"ethusd"`
+	Ethusd_timestamp string `json:"ethusd_timestamp"`
+}
+
+type ethVal struct {
+	Status  string  `json:"status"`
+	Message string  `json:"message"`
+	Result  ethConv `json:"result"`
+}
+
 func GetEthBalance(address string) (string, string) {
 	apiKey := os.Getenv("ETHERSCAN_API_KEY")
 	balanceUrl := fmt.Sprintf("https://api.etherscan.io/api?module=account&action=balance&address=%s&tag=latest&apikey=%s", address, apiKey)

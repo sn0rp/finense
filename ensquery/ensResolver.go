@@ -10,25 +10,6 @@ import (
 	ens "github.com/wealdtech/go-ens/v3"
 )
 
-type ethBalance struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-	Result  string `json:"result"`
-}
-
-type ethConv struct {
-	Ethbtc           string `json:"ethbtc"`
-	Ethbtc_timestap  string `json:"ethbtc_timestamp"`
-	Ethusd           string `json:"ethusd"`
-	Ethusd_timestamp string `json:"ethusd_timestamp"`
-}
-
-type ethVal struct {
-	Status  string  `json:"status"`
-	Message string  `json:"message"`
-	Result  ethConv `json:"result"`
-}
-
 func ENSInit(domain string) string {
 	PID := os.Getenv("INFURA_PROJECT_ID")
 
@@ -39,14 +20,6 @@ func ENSInit(domain string) string {
 	if DomainExistsErr(err) {
 		return "unregistered"
 	}
-
-	// return all addresses with ENS records. This will be useful for future net worth calculation
-	//coins := getAllCoinTypes(domain)
-	//eth, usd := getEthBalance(address.Hex(), apiKey)
-
-	//fmt.Printf("Address of %s is %s\n", domain, address.Hex())
-	//fmt.Printf("Coins held: %v\n", coins)
-	//fmt.Printf("%s holds %s ETH which equals %s USD\n", domain, eth, usd)
 
 	return address.Hex()
 }
