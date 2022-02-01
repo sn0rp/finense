@@ -36,7 +36,9 @@ func ENSInit(domain string) string {
 	CheckErr(err)
 
 	address, err := ens.Resolve(client, domain)
-	CheckErr(err)
+	if DomainExistsErr(err) {
+		return "unregistered"
+	}
 
 	// return all addresses with ENS records. This will be useful for future net worth calculation
 	//coins := getAllCoinTypes(domain)
