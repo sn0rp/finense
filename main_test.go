@@ -28,7 +28,7 @@ func TestEmpty(t *testing.T) {
 func TestBadAddress(t *testing.T) {
 	router := setupRouter()
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/snorp.com", nil)
+	req, _ := http.NewRequest("GET", "/snorp.dev", nil)
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 400, w.Code, "Only .eth domain endpoints are allowed")
 }
@@ -38,15 +38,15 @@ func TestGoodAddress(t *testing.T) {
 	ensquery.CheckErr(err)
 	router := setupRouter()
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/snorp.eth", nil)
+	req, _ := http.NewRequest("GET", "/brantly.eth", nil)
 	router.ServeHTTP(w, req)
 
-	snorpAddress := "0x0FA6273Ce887D26622698eAbc9311597fC66a351"
+	brantlyAddress := "0x983110309620D911731Ac0932219af06091b6744"
 	respBody, err := ioutil.ReadAll(w.Body)
 	ensquery.CheckErr(err)
 	bodyString := string(respBody)
 	fmt.Println(bodyString)
-	gotJson := strings.Contains(bodyString, snorpAddress)
+	gotJson := strings.Contains(bodyString, brantlyAddress)
 
 	assert.Equal(t, 200, w.Code, ".eth domain is properly handled by API")
 	assert.Equal(t, true, gotJson, "Domain is properly resolved to address")
