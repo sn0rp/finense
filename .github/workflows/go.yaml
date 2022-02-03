@@ -25,11 +25,6 @@ jobs:
         run: |
           go version
           go get -d
-
-      - name: Run vet & lint
-        run: |
-          go vet .
-          golint .
       
       - name: Create env file
         run: |
