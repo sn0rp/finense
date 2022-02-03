@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest #${{ matrix.platform }}
 
     steps:
       - uses: actions/checkout@v2
@@ -28,6 +28,7 @@ jobs:
       
       - name: Create env file
         run: |
+          touch .env
           cat << EOF .env
           ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}
           INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }}
