@@ -24,14 +24,16 @@ jobs:
           go version
           go get -d
       
-      - name: Create env file and run tests
+      - name: Create env file
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
         run: |
           touch .env
           cat << EOF .env
-          ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}
-          INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }}
+          ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
+          INFURA_PROJECT_ID=${INFURA_PROJECT_ID}
           EOF
-          go test -v ./...
 
-      #- name: Run tests
-      #  run: go test -v ./...
+      - name: Run tests
+        run: go test -v ./...
