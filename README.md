@@ -5,6 +5,7 @@
 <div align="center">
   <a href="LICENSE"><img alt="License badge" src="https://img.shields.io/github/license/snorper/finense?color=brightgreen"></a>
   <a href="https://github.com/snorper/finense/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/snorper/finense?color=brightgreen"></a>
+  <a href="https://github.com/Snorper/finense/actions"><img alt="Workflows" src="https://img.shields.io/github/workflow/status/snorper/finense/finense-tests"></a>
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/snorper/finense?color=brightgreen">
   <img alt="Go Version" src="https://img.shields.io/github/go-mod/go-version/snorper/finense?color=brightgreen">
 </div>
