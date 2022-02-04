@@ -38,15 +38,15 @@ func TestGoodAddress(t *testing.T) {
 	ensquery.CheckErr(err)
 	router := setupRouter()
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/brantly.eth", nil)
+	req, _ := http.NewRequest("GET", "/vitalik.eth", nil)
 	router.ServeHTTP(w, req)
 
-	brantlyAddress := "0x983110309620D911731Ac0932219af06091b6744"
+	vitalikAddress := "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 	respBody, err := ioutil.ReadAll(w.Body)
 	ensquery.CheckErr(err)
 	bodyString := string(respBody)
 	fmt.Println(bodyString)
-	gotJson := strings.Contains(bodyString, brantlyAddress)
+	gotJson := strings.Contains(bodyString, vitalikAddress)
 
 	assert.Equal(t, 200, w.Code, ".eth domain is properly handled by API")
 	assert.Equal(t, true, gotJson, "Domain is properly resolved to address")

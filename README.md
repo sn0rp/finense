@@ -13,7 +13,6 @@
 ### Table of Contents
 - [Summary](#Summary)
 - [Usage](#Usage)
-- [Known Issues](#Known-Issues)
 - [Contributing](#Contributing)
 - [License](#License)
 
@@ -43,14 +42,6 @@ $ curl localhost:8080/YOURNAME.eth
     "usd": "2500"
 }
 ```
-
-## Known Issues
-For domains that own a sufficiently large quantity of ETH, we encounter the following error:
-```
-strconv.Atoi: parsing "4345860487667874404933": value out of range
-```
-
-We will need to find an alternate method of parsing data from such fortunate domains.
 
 ## Contributing
 While the API currently only returns data on ETH, ENS supports addresses for multiple coin types. However, most other addresses are not encoded in the same manner as ETH addresses, so it will be time-consuming to add support for all. If you are feeling adventurous, please feel free to compare the current top currencies against [this list](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) and submit a pull request after resolving and decoding the next unsupported address type. You may want to consult the documentation for [go-ens](https://github.com/wealdtech/go-ens) as well. Otherwise, general improvements are always welcome.

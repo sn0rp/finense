@@ -66,9 +66,9 @@ func GetEthBalance(address string) (string, string) {
 		panic(fmt.Sprintf("Unexpected response: convStruct.Message == %s", convMessage))
 	}
 
-	balance, err := strconv.Atoi(balanceStruct.Result)
+	balance, err := strconv.ParseFloat(balanceStruct.Result, 64)
 	CheckErr(err)
-	ethFloat := float64(balance) / math.Pow(10, 18)
+	ethFloat := balance / math.Pow(10, 18)
 
 	ethUsd, err := strconv.ParseFloat(convStruct.Result.Ethusd, 64)
 	CheckErr(err)
