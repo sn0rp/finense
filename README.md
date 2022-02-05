@@ -1,4 +1,5 @@
 <h1 align="center">finense</h1>
+<div align="center"><img alt="finense logo" style="width:25%; height: auto" src="finense-logo.png"></div>
 <p align ="center">
   An API built to programmatically access ENS records.
 </p>
