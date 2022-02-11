@@ -26,9 +26,7 @@ In the future, *finense* will gradually add support for tokens and other ENS-sup
 As my financial portfolio grows in diversity, it become increasingly tedious to calculute monthly outcome and net worth using a spreadsheet alone. I intend to integrate this API in a future solution to clearly present one's portfolio and net worth on demand. It is my assumption and hope that others may find *finense* useful, as this and the software yet to come will already have a positive impact for at least one user.
 
 ## Usage
-The simplest method of accessing the api is to use the public implementation at [finense.snorp.dev](https://finense.snorp.dev).
-
-Otherwise, you can either run `go [build/install]` or build the Dockerfile to use it in your own application. Note that a `.env` file is expected in the project's root directory to provide an Etherscan API key and an Infura project ID, both of which are trivial to acquire.
+Until this API is available under a dedicated domain, you can either run `go [build/install]` or build the Dockerfile to use it in your own application. Note that a `.env` file is expected in the project's root directory to provide an Etherscan API key and an Infura project ID, both of which are trivial to acquire.
 
 The API can be reached at port 8080 by default. Either navigate to `http://localhost:8080/YOURNAME.eth` in a browser or otherwise send a *GET* request to view available data:
 
