@@ -16,7 +16,7 @@ const BOOKS = new Map([
 
 
 // Iterate over address map to find amounts owned
-async function getAmounts(addresses) {
+export async function getAmounts(addresses) {
     const amounts = new Map();
     for (const [key, val] of addresses) {
         if (BOOKS.has(key)) {
@@ -45,6 +45,8 @@ async function getAmounts(addresses) {
                     formattedBalance = parsedBalance / Math.pow(10,18);
                     break;
                 default:
+                    console.log(`Could not parse ${key} balance, skipping`);
+                    continue;
             }
 
             const balance = String(formattedBalance);

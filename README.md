@@ -51,6 +51,7 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [ ] Fill in API routes using ENS scripts
         - [ ] `/:domain`: provide net worth and asset breakdown
         - [X] `/:domain/addrs`: provide only addresses, for all supported assets
+        - [X] `/:domain/amounts`: provide only amounts owned for all supported assets
         - [ ] `/:domain/:asset` provide only (all) data for a specific asset
         - [ ] `/:domain/:asset/amount` provide only amount owned for a specific asset
         - [ ] `/:domain/:asset/usd` provide only usd value of amount owned for a specific asset
