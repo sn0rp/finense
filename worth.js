@@ -1,5 +1,3 @@
-// UNDER DEVELOPMENT
-
 import fetch from 'node-fetch';
 import 'dotenv/config';
 
@@ -20,7 +18,7 @@ export async function getAmounts(addresses) {
     const amounts = new Map();
     for (const [key, val] of addresses) {
         if (BOOKS.has(key)) {
-            const fullURL = `${BOOKS.get(key)}${NN_URL}${val}${NN_SUFFIX}`
+            const fullURL = `${BOOKS.get(key)}${NN_URL}${val}${NN_SUFFIX}`;
             const response = await fetch(fullURL, {
                 method: 'GET',
                 headers: {
@@ -31,6 +29,7 @@ export async function getAmounts(addresses) {
             const responseBody = await response.json();
             const parsedBalance = Number(responseBody.balance);
             let formattedBalance = 0.0;
+
             switch(key) {
                 case 'btc':
                     formattedBalance = parsedBalance / Math.pow(10, 8);
@@ -55,6 +54,47 @@ export async function getAmounts(addresses) {
     }
 
     return amounts;
+}
+
+export async function getSingleAmount(asset, address) {
+    let response = {};
+    let amount = "";
+
+    if (BOOKS.has(asset)) {
+        const fullURL = `${BOOKS.get(asset)}${NN_URL}${address}${NN_SUFFIX}`;
+        const response = await fetch(fullURL, {
+            method: 'GET',
+            headers: {
+                'api-key': NOW_NODES,
+            },
+        });
+
+        const responseBody = await response.json();
+        const parsedBalance = Number(responseBody.balance);
+        let formattedBalance = 0.0;
+
+        switch (asset) {
+            case 'btc':
+                formattedBalance = parsedBalance / Math.pow(10, 8);
+                break;
+            case 'ltc':
+                formattedBalance = parsedBalance / Math.pow(10, 8);
+                break;
+            case 'doge':
+                formattedBalance = parsedBalance / Math.pow(10, 8);
+                break;
+            case 'eth':
+                formattedBalance = parsedBalance / Math.pow(10, 18);
+                break;
+            default:
+                console.log(`Could not parse ${asset} balance, skipping`);
+        }
+
+        amount = String(formattedBalance);
+    }
+
+    response["balance"] = amount;
+    return response;
 }
 
 // Convert retrieved amounts to local currency (just USD as of now)

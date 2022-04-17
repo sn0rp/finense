@@ -54,7 +54,7 @@ This software was created to meet a personal need. For this reason, I assume it 
         - [X] `/:domain/amounts`: provide only amounts owned for all supported assets
         - [ ] `/:domain/:asset` provide only (all) data for a specific asset
         - [X] `/:domain/:asset/address` provide only address for a specific asset
-        - [ ] `/:domain/:asset/amount` provide only amount owned for a specific asset
+        - [X] `/:domain/:asset/amount` provide only amount owned for a specific asset
         - [ ] `/:domain/:asset/usd` provide only usd value of amount owned for a specific asset
         - [ ] `/:domain/net` provide only net worth
 - [ ] Testing
