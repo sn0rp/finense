@@ -8,12 +8,20 @@ const PORT = process.env.PORT;
 const app = express();
 
 // Return all supported address records for a given domain
-app.get('/domain/:domain/addrs', async (req, res) => {
+app.get('/domain/:domain/address', async (req, res) => {
     let domain = req.params.domain;
     const resolver = await resolve.init(domain);
     const coinTypes = await resolve.getCoinTypes(domain);
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     res.json(Object.fromEntries(addrs));
+});
+
+app.get('/domain/:domain/:asset/address', async (req, res) => {
+    let domain = req.params.domain;
+    let asset = req.params.asset;
+    const resolver = await resolve.init(domain);
+    const addr = await resolve.resolveSingleAddr(asset, resolver);
+    res.json(addr);
 });
 
 // Return amounts owned for all supported address records

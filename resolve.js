@@ -47,7 +47,7 @@ export async function resolveAddrs(coinTypes, resolver) {
     return allAddrs;
 }
 
-async function resolveSingleAddr(asset, resolver) {
+export async function resolveSingleAddr(asset, resolver) {
     let response = {};
     let addr = "";
     switch (asset) {
