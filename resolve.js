@@ -47,6 +47,28 @@ export async function resolveAddrs(coinTypes, resolver) {
     return allAddrs;
 }
 
+async function resolveSingleAddr(asset, resolver) {
+    let response = {};
+    let addr = "";
+    switch (asset) {
+        case 'btc':
+            addr = await resolver.getAddress(0);
+            break;
+        case 'ltc':
+            addr = await resolver.getAddress(2);
+            break;
+        case 'doge':
+            addr = await resolver.getAddress(3);
+            break;
+        case 'eth':
+            addr = await resolver.getAddress(60);
+            break;
+        default:
+    }
+    response['address'] = addr;
+    return response;
+}
+
 // Return a list of all coin types for which the domain has address records
 export async function getCoinTypes(domain) {
     const response = await fetch("https://api.thegraph.com/subgraphs/name/ensdomains/ens", {
@@ -71,12 +93,3 @@ export async function getCoinTypes(domain) {
     const coinTypes = responseBody.data.domains[0].resolver.coinTypes;
     return coinTypes;
 }
-
-// testing coin types retrieval
-//const coinTypes = await getCoinTypes("vitalik.eth");
-//console.log(coinTypes);
-
-// Testing address retrieval
-//const resolver = await init("vitalik.eth");
-//const addresses = await resolveAddrs(coinTypes);
-//console.log(addresses);

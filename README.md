@@ -43,7 +43,7 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [X] Resolve domain to list of coin types with address records
     - [X] Filter a domain's coin types list for supported assets
     - [X] Resolve each supported coin type to the given domain's matching address record
-    - [ ] Get amount owned for each supported asset
+    - [X] Get amount owned for each supported asset
     - [ ] Convert amounts owned to USD
     - [ ] Aggregate amounts owned for all supported assets to calculate net worth
 - [ ] API Development
@@ -64,6 +64,7 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [ ] Test completed API
     - [ ] Automate testing with GitHub workflows
 - [ ] Implement Docker for convenient and consistent deployment
+- [ ] Fully document API
 - [ ] Build a minimal, user-friendly web frontend
 - [ ] Deploy for public use
 
