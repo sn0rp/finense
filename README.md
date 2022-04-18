@@ -44,7 +44,7 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [X] Filter a domain's coin types list for supported assets
     - [X] Resolve each supported coin type to the given domain's matching address record
     - [X] Get amount owned for each supported asset
-    - [ ] Convert amounts owned to USD
+    - [X] Convert amounts owned to USD
     - [ ] Aggregate amounts owned for all supported assets to calculate net worth
 - [ ] API Development
     - [X] Create API skeleton
@@ -52,7 +52,7 @@ This software was created to meet a personal need. For this reason, I assume it 
         - [ ] `/:domain`: provide net worth and asset breakdown
         - [X] `/:domain/address`: provide only addresses, for all supported assets
         - [X] `/:domain/amount`: provide only amounts owned for all supported assets
-        - [ ] `/:domain/:asset` provide only (all) data for a specific asset
+        - [X] `/:domain/:asset` provide only (all) data for a specific asset
         - [X] `/:domain/:asset/address` provide only address for a specific asset
         - [X] `/:domain/:asset/amount` provide only amount owned for a specific asset
         - [X] `/:domain/:asset/fiat` provide only value in local currency of amount owned for a specific asset

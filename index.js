@@ -26,6 +26,19 @@ app.get('/domain/:domain/amount', async (req, res) => {
     res.json(Object.fromEntries(amounts));
 });
 
+// Return a domain's address, amount owned, and fiat value for one asset
+app.get('/domain/:domain/:asset', async (req, res) => {
+    let domain = req.params.domain;
+    let asset = req.params.asset;
+    let currency = req.params.currency;
+    const resolver = await resolve.init(domain);
+    const addr = await resolve.resolveSingleAddr(asset, resolver);
+    const amount = await worth.getSingleAmount(asset, addr.address);
+    const fiat = await worth.toFiat(asset, amount.balance, currency);
+    const response = Object.assign({}, addr, amount, fiat);
+    res.json(response);
+});
+
 // Return address of a specified asset for a given domain
 app.get('/domain/:domain/:asset/address', async (req, res) => {
     let domain = req.params.domain;
