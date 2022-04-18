@@ -46,16 +46,16 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [X] Get amount owned for each supported asset
     - [X] Convert amounts owned to USD
     - [X] Aggregate amounts owned for all supported assets to calculate net worth
-- [ ] API Development
+- [X] API Development
     - [X] Create API skeleton
-    - [ ] Fill in API routes using ENS scripts
-        - [ ] `/:domain/full`: provide net worth and asset breakdown
+    - [X] Fill in API routes using ENS scripts
+        - [X] `/:domain`: provide net worth and asset breakdown
         - [X] `/:domain/address`: provide only addresses, for all supported assets
         - [X] `/:domain/amount`: provide only amounts owned for all supported assets
         - [X] `/:domain/:asset` provide only (all) data for a specific asset
         - [X] `/:domain/:asset/address` provide only address for a specific asset
         - [X] `/:domain/:asset/amount` provide only amount owned for a specific asset
-        - [X] `/:domain/:asset/fiat` provide only value in local currency of amount owned for a specific asset
+        - [X] `/:domain/:asset/fiat` provide only value in USD of amount owned for a specific asset
         - [X] `/:domain/net` provide only net worth
 - [ ] Testing
     - [ ] Affirm implementation of all necessary error handling

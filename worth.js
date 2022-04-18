@@ -100,23 +100,13 @@ export async function getSingleAmount(asset, address) {
     return response;
 }
 
-// Convert asset balance to local currency
-export async function toFiat(asset, balance, currency) {
+// Convert asset balance to USD
+export async function toFiat(asset, balance) {
     let fiatAmount = {};
     const ast = asset.toUpperCase();
     let bal = Number(balance);
-    let cur = "";
-    let cur_low = "";
 
-    if (currency === undefined) {
-        cur = "USD";
-        cur_low = "usd";
-    } else {
-        cur = currency.toUpperCase();
-        cur_low = currency.toLowerCase();
-    }
-
-    const fullURL = `${BA_PREFIX}${ast}-${cur}`;
+    const fullURL = `${BA_PREFIX}${ast}-USD`;
     const response = await fetch(fullURL, {
         method: 'GET',
     });
@@ -125,18 +115,18 @@ export async function toFiat(asset, balance, currency) {
     const price = responseBody.last_trade_price;
     const fiatBalance = bal * price;
 
-    fiatAmount[cur_low] = String(fiatBalance);
+    fiatAmount["usd"] = String(fiatBalance);
     return fiatAmount;
 }
 
 
-// Return the sum of all retrieved amounts in local currency
-export async function netWorth(balances, currency) {
+// Return the sum of all retrieved amounts in USD
+export async function netWorth(balances) {
     let response = {};
     let net = 0.0;
 
     for (const [asset, balance] of balances) {
-        const fiat = await toFiat(asset, balance, currency);
+        const fiat = await toFiat(asset, balance);
         Object.values(fiat).forEach(value => {
             let num = Number(value);
             net += num;
