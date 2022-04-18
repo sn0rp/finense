@@ -101,7 +101,7 @@ export async function getSingleAmount(asset, address) {
 }
 
 // Convert asset balance to local currency
-async function toFiat(asset, balance, currency) {
+export async function toFiat(asset, balance, currency) {
     let fiatAmount = {};
     const ast = asset.toUpperCase();
     let bal = Number(balance);

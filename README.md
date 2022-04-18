@@ -51,11 +51,11 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [ ] Fill in API routes using ENS scripts
         - [ ] `/:domain`: provide net worth and asset breakdown
         - [X] `/:domain/address`: provide only addresses, for all supported assets
-        - [X] `/:domain/amounts`: provide only amounts owned for all supported assets
+        - [X] `/:domain/amount`: provide only amounts owned for all supported assets
         - [ ] `/:domain/:asset` provide only (all) data for a specific asset
         - [X] `/:domain/:asset/address` provide only address for a specific asset
         - [X] `/:domain/:asset/amount` provide only amount owned for a specific asset
-        - [ ] `/:domain/:asset/fiat` provide only value in local currency of amount owned for a specific asset
+        - [X] `/:domain/:asset/fiat` provide only value in local currency of amount owned for a specific asset
         - [ ] `/:domain/net` provide only net worth
 - [ ] Testing
     - [ ] Affirm implementation of all necessary error handling
