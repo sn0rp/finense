@@ -16,12 +16,23 @@ app.get('/domain/:domain/address', async (req, res) => {
     res.json(Object.fromEntries(addrs));
 });
 
+// Return address of a specified asset for a given domain
 app.get('/domain/:domain/:asset/address', async (req, res) => {
     let domain = req.params.domain;
     let asset = req.params.asset;
     const resolver = await resolve.init(domain);
     const addr = await resolve.resolveSingleAddr(asset, resolver);
     res.json(addr);
+});
+
+// Return amount owned of a specified asset for a given domain
+app.get('/domain/:domain/:asset/amount', async (req, res) => {
+    let domain = req.params.domain;
+    let asset = req.params.asset;
+    const resolver = await resolve.init(domain);
+    const addr = await resolve.resolveSingleAddr(asset, resolver);
+    const amount = await worth.getSingleAmount(asset, addr.address);
+    res.json(amount);
 });
 
 // Return amounts owned for all supported address records
