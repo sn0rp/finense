@@ -47,6 +47,7 @@ export async function resolveAddrs(coinTypes, resolver) {
     return allAddrs;
 }
 
+// Resolve domain to a specified address type
 export async function resolveSingleAddr(asset, resolver) {
     let response = {};
     let addr = "";

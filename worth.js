@@ -12,6 +12,8 @@ const BOOKS = new Map([
     ["eth", "https://eth-blockbook"]
 ]);
 
+const BA_PREFIX = "https://api.blockchain.com/v3/exchange/tickers/";
+
 
 // Iterate over address map to find amounts owned
 export async function getAmounts(addresses) {
@@ -56,6 +58,7 @@ export async function getAmounts(addresses) {
     return amounts;
 }
 
+// Get amount owned by an address for a specified asset
 export async function getSingleAmount(asset, address) {
     let response = {};
     let amount = "";
@@ -97,25 +100,33 @@ export async function getSingleAmount(asset, address) {
     return response;
 }
 
-// Convert retrieved amounts to local currency (just USD as of now)
-async function toFiat(amounts) {
-    const fiatAmounts = new Map();
-    
-    amounts.forEach(function(key,val) {
-        switch(key) {
-            case 'btc':
-                break;
-            case 'ltc':
-                break;
-            case 'doge':
-                break;
-            case 'eth':
-                break;
-            default:
-        }
-    })
+// Convert asset balance to local currency
+async function toFiat(asset, balance, currency) {
+    let fiatAmount = {};
+    const ast = asset.toUpperCase();
+    let bal = Number(balance);
+    let cur = "";
+    let cur_low = "";
 
-    return fiatAmounts;
+    if (currency === undefined) {
+        cur = "USD";
+        cur_low = "usd";
+    } else {
+        cur = currency.toUpperCase();
+        cur_low = currency.toLowerCase();
+    }
+
+    const fullURL = `${BA_PREFIX}${ast}-${cur}`;
+    const response = await fetch(fullURL, {
+        method: 'GET',
+    });
+
+    const responseBody = await response.json();
+    const price = responseBody.last_trade_price;
+    const fiatBalance = bal * price;
+
+    fiatAmount[cur_low] = String(fiatBalance);
+    return fiatAmount;
 }
 
 
