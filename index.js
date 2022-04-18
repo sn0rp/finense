@@ -26,6 +26,18 @@ app.get('/domain/:domain/amount', async (req, res) => {
     res.json(Object.fromEntries(amounts));
 });
 
+// Return sum of balances in local currency for all supported addresses
+app.get('/domain/:domain/net/:currency?', async (req, res) => {
+    let domain = req.params.domain;
+    let currency = req.params.currency;
+    const resolver = await resolve.init(domain);
+    const coinTypes = await resolve.getCoinTypes(domain);
+    const addrs = await resolve.resolveAddrs(coinTypes, resolver);
+    const amounts = await worth.getAmounts(addrs);
+    const net = await worth.netWorth(amounts, currency);
+    res.json(net);
+});
+
 // Return a domain's address, amount owned, and fiat value for one asset
 app.get('/domain/:domain/:asset', async (req, res) => {
     let domain = req.params.domain;
@@ -69,7 +81,5 @@ app.get('/domain/:domain/:asset/fiat/:currency?', async (req, res) => {
     const fiat = await worth.toFiat(asset, amount.balance, currency);
     res.json(fiat);
 });
-
-
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

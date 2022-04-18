@@ -131,14 +131,18 @@ export async function toFiat(asset, balance, currency) {
 
 
 // Return the sum of all retrieved amounts in local currency
-function netWorth(fiatAmounts) {
-    let net = 0;
+export async function netWorth(balances, currency) {
+    let response = {};
+    let net = 0.0;
 
-    fiatAmounts.forEach(function(key,val) {
-        // 1. Convert to int
-        // 2. add val to net
-    })
+    for (const [asset, balance] of balances) {
+        const fiat = await toFiat(asset, balance, currency);
+        Object.values(fiat).forEach(value => {
+            let num = Number(value);
+            net += num;
+        });
+    }
 
-    // 3. Convert net to string
-    // 4. Return net
+    response["net"] = String(net);
+    return response;
 }

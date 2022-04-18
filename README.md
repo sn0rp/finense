@@ -38,25 +38,25 @@ This software was created to meet a personal need. For this reason, I assume it 
 ## Roadmap
 - [X] Determine best approach in detail
 - [X] Create `README.md` skeleton
-- [ ] Communicate with ENS and relevant blockchain APIs to get necessary data
+- [X] Communicate with ENS and relevant blockchain APIs to get necessary data
     - [X] Connect to Ethereum & establish resolver for arbitrary domains
     - [X] Resolve domain to list of coin types with address records
     - [X] Filter a domain's coin types list for supported assets
     - [X] Resolve each supported coin type to the given domain's matching address record
     - [X] Get amount owned for each supported asset
     - [X] Convert amounts owned to USD
-    - [ ] Aggregate amounts owned for all supported assets to calculate net worth
+    - [X] Aggregate amounts owned for all supported assets to calculate net worth
 - [ ] API Development
     - [X] Create API skeleton
     - [ ] Fill in API routes using ENS scripts
-        - [ ] `/:domain`: provide net worth and asset breakdown
+        - [ ] `/:domain/full`: provide net worth and asset breakdown
         - [X] `/:domain/address`: provide only addresses, for all supported assets
         - [X] `/:domain/amount`: provide only amounts owned for all supported assets
         - [X] `/:domain/:asset` provide only (all) data for a specific asset
         - [X] `/:domain/:asset/address` provide only address for a specific asset
         - [X] `/:domain/:asset/amount` provide only amount owned for a specific asset
         - [X] `/:domain/:asset/fiat` provide only value in local currency of amount owned for a specific asset
-        - [ ] `/:domain/net` provide only net worth
+        - [X] `/:domain/net` provide only net worth
 - [ ] Testing
     - [ ] Affirm implementation of all necessary error handling
     - [ ] Implement proper logging
