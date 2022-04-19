@@ -50,7 +50,7 @@ export async function resolveAddrs(coinTypes, resolver) {
                 allAddrs.set("eth", ethAddr);
                 break;
             default:
-                console.log(`Coin Type "${thisCoin}" is not yet supported.`)
+                console.log(`Coin Type "${thisCoin}" is not yet supported.`);
         }
     }
     return allAddrs;
@@ -75,6 +75,8 @@ export async function resolveSingleAddr(asset, resolver) {
             addr = await resolver.getAddress(60);
             break;
         default:
+            addr = null;
+            console.log(`Asset "${asset}" is not supported.`);
     }
     response['address'] = addr;
     return response;

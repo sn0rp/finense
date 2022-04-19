@@ -58,15 +58,13 @@ This software was created to meet a personal need. For this reason, I assume it 
         - [X] `/:domain/:asset/fiat` provide only value in USD of amount owned for a specific asset
         - [X] `/:domain/net` provide only net worth
 - [ ] Testing
-    - [ ] Affirm implementation of all necessary error handling
+    - [X] Affirm implementation of all necessary error handling
     - [ ] Implement proper logging
-    - [ ] Test blockchain-related code in isolation
-    - [ ] Test API code in isolation
-    - [ ] Test completed API
+    - [ ] Implement all necessary tests
     - [ ] Automate testing with GitHub workflows
 - [ ] Fully document API
+- [ ] Deploy API for public use
 - [ ] Build a minimal, user-friendly web frontend
-- [ ] Deploy for public use
 
 ## License
 All original software within this repository is licensed under the GPL-3.0 License.

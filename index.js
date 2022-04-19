@@ -18,9 +18,17 @@ app.get('/domain/:domain', async (req, res) => {
 
     const avatar = await resolve.resolveAvatar(resolver);
     const coinTypes = await resolve.getCoinTypes(domain);
+    if (!coinTypes) return res.status(502).send(
+        'Server received an invalid response after querying the ENS Subgraph and is unable to determine address records for this domain.');
+
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
+    if (!amounts) return res.status(502).send(
+        `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
     const net = await worth.netWorth(amounts);
+    if (!net) return res.status(502).send(
+        `Server received an invalid response after querying the Blockchain.com API and is unable to determine ${asset} value in USD.`);
 
     response["domain"] = domain;
     response["avatar"] = avatar;
@@ -28,10 +36,17 @@ app.get('/domain/:domain', async (req, res) => {
 
     let assets = [];
     for (const [asset, addr] of addrs) {
+        const name = { "name": asset};
         const address = { "address": addr };
         const amount = await worth.getSingleAmount(asset, addr);
+        if (!amount) return res.status(502).send(
+            `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
         const fiat = await worth.toFiat(asset, amount.balance);
-        let assetFull = Object.assign({}, address, amount, fiat);
+        if (!fiat) return res.status(502).send(
+            `Server received an invalid response after querying the Blockchain.com API and is unable to determine ${asset} value in USD.`);
+
+        let assetFull = Object.assign({}, name, address, amount, fiat);
         assets.push(assetFull);
         //response[asset] = assetFull;
     }
@@ -49,6 +64,9 @@ app.get('/domain/:domain/address', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const coinTypes = await resolve.getCoinTypes(domain);
+    if (!coinTypes) return res.status(502).send(
+        'Server received an invalid response after querying the ENS Subgraph and is unable to determine address records for this domain.');
+
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     res.json(Object.fromEntries(addrs));
 });
@@ -62,8 +80,14 @@ app.get('/domain/:domain/amount', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const coinTypes = await resolve.getCoinTypes(domain);
+    if (!coinTypes) return res.status(502).send(
+        'Server received an invalid response after querying the ENS Subgraph and is unable to determine address records for this domain.');
+
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
+    if (!amounts) return res.status(502).send(
+        `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
     res.json(Object.fromEntries(amounts));
 });
 
@@ -90,9 +114,18 @@ app.get('/domain/:domain/net', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const coinTypes = await resolve.getCoinTypes(domain);
+    if (!coinTypes) return res.status(502).send(
+        'Server received an invalid response after querying the ENS Subgraph and is unable to determine address records for this domain.');
+
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
+    if (!amounts) return res.status(502).send(
+        `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
     const net = await worth.netWorth(amounts);
+    if (!net) return res.status(502).send(
+        `Server received an invalid response after querying the Blockchain.com API and is unable to determine ${asset} value in USD.`);
+
     res.json(net);
 });
 
@@ -106,8 +139,17 @@ app.get('/domain/:domain/:asset', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const addr = await resolve.resolveSingleAddr(asset, resolver);
+    if (!addr.address) return res.status(400).send(
+        `Asset "${asset}" is not supported`);
+
     const amount = await worth.getSingleAmount(asset, addr.address);
+    if (!amount) return res.status(502).send(
+        `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
     const fiat = await worth.toFiat(asset, amount.balance);
+    if (!fiat) return res.status(502).send(
+        `Server received an invalid response after querying the Blockchain.com API and is unable to determine ${asset} value in USD.`);
+
     const response = Object.assign({}, addr, amount, fiat);
     res.json(response);
 });
@@ -122,6 +164,9 @@ app.get('/domain/:domain/:asset/address', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const addr = await resolve.resolveSingleAddr(asset, resolver);
+    if (!addr.address) return res.status(400).send(
+        `Asset "${asset}" is not supported`);
+
     res.json(addr);
 });
 
@@ -135,7 +180,13 @@ app.get('/domain/:domain/:asset/amount', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const addr = await resolve.resolveSingleAddr(asset, resolver);
+    if (!addr.address) return res.status(400).send(
+        `Asset "${asset}" is not supported`);
+
     const amount = await worth.getSingleAmount(asset, addr.address);
+    if (!amount) return res.status(502).send(
+        `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
     res.json(amount);
 });
 
@@ -148,8 +199,17 @@ app.get('/domain/:domain/:asset/fiat', async (req, res) => {
         'ENS domain lookup returned null, indicating that this domain is unregistered.');
 
     const addr = await resolve.resolveSingleAddr(asset, resolver);
+    if (!addr.address) return res.status(400).send(
+        `Asset "${asset}" is not supported`);
+
     const amount = await worth.getSingleAmount(asset, addr.address);
+    if (!amount) return res.status(502).send(
+        `Server received an invalid response after querying the NOWNodes API and is unable to determine ${asset} balance`);
+
     const fiat = await worth.toFiat(asset, amount.balance);
+    if (!fiat) return res.status(502).send(
+        `Server received an invalid response after querying the Blockchain.com API and is unable to determine ${asset} value in USD.`);
+
     res.json(fiat);
 });
 

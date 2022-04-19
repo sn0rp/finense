@@ -100,7 +100,7 @@ export async function getSingleAmount(asset, address) {
         }
 
         amount = String(formattedBalance);
-    }
+    } else return null;
 
     response["balance"] = amount;
     return response;
@@ -136,6 +136,7 @@ export async function netWorth(balances) {
 
     for (const [asset, balance] of balances) {
         const fiat = await toFiat(asset, balance);
+        if (!fiat) return null;
         Object.values(fiat).forEach(value => {
             let num = Number(value);
             net += num;
