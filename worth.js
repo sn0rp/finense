@@ -26,6 +26,9 @@ export async function getAmounts(addresses) {
                 headers: {
                     'api-key': NOW_NODES,
                 },
+            }).catch(err => {
+                console.log(err);
+                return null;
             });
 
             const responseBody = await response.json();
@@ -70,6 +73,9 @@ export async function getSingleAmount(asset, address) {
             headers: {
                 'api-key': NOW_NODES,
             },
+        }).catch(err => {
+            console.log(err);
+            return null;
         });
 
         const responseBody = await response.json();
@@ -109,6 +115,9 @@ export async function toFiat(asset, balance) {
     const fullURL = `${BA_PREFIX}${ast}-USD`;
     const response = await fetch(fullURL, {
         method: 'GET',
+    }).catch(err => {
+        console.log(err);
+        return null;
     });
 
     const responseBody = await response.json();

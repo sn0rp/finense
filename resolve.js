@@ -98,6 +98,9 @@ export async function getCoinTypes(domain) {
                 }
             `,
         }),
+    }).catch(err => {
+        console.log(err);
+        return null;
     });
 
     const responseBody = await response.json();

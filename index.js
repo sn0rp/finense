@@ -7,6 +7,39 @@ const PORT = process.env.PORT;
 
 const app = express();
 
+// Return all data (domain, addresses, amounts owned, fiat values, net worth)
+app.get('/domain/:domain', async (req, res) => {
+    let response = {};
+    let domain = req.params.domain;
+
+    const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
+    const avatar = await resolve.resolveAvatar(resolver);
+    const coinTypes = await resolve.getCoinTypes(domain);
+    const addrs = await resolve.resolveAddrs(coinTypes, resolver);
+    const amounts = await worth.getAmounts(addrs);
+    const net = await worth.netWorth(amounts);
+
+    response["domain"] = domain;
+    response["avatar"] = avatar;
+    Object.assign(response, net);
+
+    let assets = [];
+    for (const [asset, addr] of addrs) {
+        const address = { "address": addr };
+        const amount = await worth.getSingleAmount(asset, addr);
+        const fiat = await worth.toFiat(asset, amount.balance);
+        let assetFull = Object.assign({}, address, amount, fiat);
+        assets.push(assetFull);
+        //response[asset] = assetFull;
+    }
+    response["assets"] = assets;
+
+    res.json(response);
+});
+
 // Return all supported address records for a given domain
 app.get('/domain/:domain/address', async (req, res) => {
     let domain = req.params.domain;
@@ -32,36 +65,6 @@ app.get('/domain/:domain/amount', async (req, res) => {
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
     res.json(Object.fromEntries(amounts));
-});
-
-// Return all data (domain, addresses, amounts owned, fiat values, net worth)
-app.get('/domain/:domain', async (req, res) => {
-    let response = {};
-    let domain = req.params.domain;
-
-    const resolver = await resolve.init(domain);
-    if (!resolver) return res.status(404).send(
-        'ENS domain lookup returned null, indicating that this domain is unregistered.');
-
-    const avatar = await resolve.resolveAvatar(resolver);
-    const coinTypes = await resolve.getCoinTypes(domain);
-    const addrs = await resolve.resolveAddrs(coinTypes, resolver);
-    const amounts = await worth.getAmounts(addrs);
-    const net = await worth.netWorth(amounts);
-
-    response["domain"] = domain;
-    response["avatar"] = avatar;
-    Object.assign(response, net);
-
-    for (const [asset, addr] of addrs) {
-        const address = { "address": addr};
-        const amount = await worth.getSingleAmount(asset, addr);
-        const fiat = await worth.toFiat(asset, amount.balance);
-        let assetFull = Object.assign({}, address, amount, fiat);
-        response[asset] = assetFull;
-    }
-
-    res.json(response);
 });
 
 // Return only the avatar for a given domain
