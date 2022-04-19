@@ -10,7 +10,11 @@ const app = express();
 // Return all supported address records for a given domain
 app.get('/domain/:domain/address', async (req, res) => {
     let domain = req.params.domain;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const coinTypes = await resolve.getCoinTypes(domain);
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     res.json(Object.fromEntries(addrs));
@@ -19,7 +23,11 @@ app.get('/domain/:domain/address', async (req, res) => {
 // Return amounts owned for all supported address records
 app.get('/domain/:domain/amount', async (req, res) => {
     let domain = req.params.domain;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const coinTypes = await resolve.getCoinTypes(domain);
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
@@ -32,6 +40,9 @@ app.get('/domain/:domain', async (req, res) => {
     let domain = req.params.domain;
 
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const avatar = await resolve.resolveAvatar(resolver);
     const coinTypes = await resolve.getCoinTypes(domain);
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
@@ -57,7 +68,11 @@ app.get('/domain/:domain', async (req, res) => {
 app.get('/domain/:domain/avatar', async (req, res) => {
     let response = {};
     let domain = req.params.domain;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const avatar = await resolve.resolveAvatar(resolver);
     response["avatar"] = avatar;
     res.json(response);
@@ -66,7 +81,11 @@ app.get('/domain/:domain/avatar', async (req, res) => {
 // Return sum of balances in local currency for all supported addresses
 app.get('/domain/:domain/net', async (req, res) => {
     let domain = req.params.domain;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const coinTypes = await resolve.getCoinTypes(domain);
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
@@ -78,7 +97,11 @@ app.get('/domain/:domain/net', async (req, res) => {
 app.get('/domain/:domain/:asset', async (req, res) => {
     let domain = req.params.domain;
     let asset = req.params.asset;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const addr = await resolve.resolveSingleAddr(asset, resolver);
     const amount = await worth.getSingleAmount(asset, addr.address);
     const fiat = await worth.toFiat(asset, amount.balance);
@@ -90,7 +113,11 @@ app.get('/domain/:domain/:asset', async (req, res) => {
 app.get('/domain/:domain/:asset/address', async (req, res) => {
     let domain = req.params.domain;
     let asset = req.params.asset;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const addr = await resolve.resolveSingleAddr(asset, resolver);
     res.json(addr);
 });
@@ -99,7 +126,11 @@ app.get('/domain/:domain/:asset/address', async (req, res) => {
 app.get('/domain/:domain/:asset/amount', async (req, res) => {
     let domain = req.params.domain;
     let asset = req.params.asset;
+
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const addr = await resolve.resolveSingleAddr(asset, resolver);
     const amount = await worth.getSingleAmount(asset, addr.address);
     res.json(amount);
@@ -110,6 +141,9 @@ app.get('/domain/:domain/:asset/fiat', async (req, res) => {
     let domain = req.params.domain;
     let asset = req.params.asset;
     const resolver = await resolve.init(domain);
+    if (!resolver) return res.status(404).send(
+        'ENS domain lookup returned null, indicating that this domain is unregistered.');
+
     const addr = await resolve.resolveSingleAddr(asset, resolver);
     const amount = await worth.getSingleAmount(asset, addr.address);
     const fiat = await worth.toFiat(asset, amount.balance);

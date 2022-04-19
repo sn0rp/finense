@@ -17,13 +17,9 @@ export async function init(domain){
     return resolver;
 }
 
-// Check if domain is registered
-export function isValid(resolver) {
-    const validity = !resolver ? false : true;
-    return validity;
-}
-
+// Resolve domain to avatar record, if applicable
 export async function resolveAvatar(resolver) {
+    if (!resolver) return null;
     const avatar = await resolver.getAvatar();
     let url = avatar.url;
     return url;
@@ -32,6 +28,7 @@ export async function resolveAvatar(resolver) {
 // Resolve all supported coin types to their addresses
 // Unsupported coin types are addressed by the default case
 export async function resolveAddrs(coinTypes, resolver) {
+    if (!resolver) return null;
     const allAddrs = new Map();
     for (let index = 0; index < coinTypes.length; ++index) {
         const thisCoin = coinTypes[index];
@@ -61,6 +58,7 @@ export async function resolveAddrs(coinTypes, resolver) {
 
 // Resolve domain to a specified address type
 export async function resolveSingleAddr(asset, resolver) {
+    if (!resolver) return null;
     let response = {};
     let addr = "";
     switch (asset) {
