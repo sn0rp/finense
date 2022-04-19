@@ -17,6 +17,12 @@ export async function init(domain){
     return resolver;
 }
 
+// Check if domain is registered
+export function isValid(resolver) {
+    const validity = !resolver ? false : true;
+    return validity;
+}
+
 export async function resolveAvatar(resolver) {
     const avatar = await resolver.getAvatar();
     let url = avatar.url;
