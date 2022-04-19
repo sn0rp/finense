@@ -64,7 +64,6 @@ This software was created to meet a personal need. For this reason, I assume it 
     - [ ] Test API code in isolation
     - [ ] Test completed API
     - [ ] Automate testing with GitHub workflows
-- [ ] Implement Docker for convenient and consistent deployment
 - [ ] Fully document API
 - [ ] Build a minimal, user-friendly web frontend
 - [ ] Deploy for public use

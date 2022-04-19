@@ -32,12 +32,14 @@ app.get('/domain/:domain', async (req, res) => {
     let domain = req.params.domain;
 
     const resolver = await resolve.init(domain);
+    const avatar = await resolve.resolveAvatar(resolver);
     const coinTypes = await resolve.getCoinTypes(domain);
     const addrs = await resolve.resolveAddrs(coinTypes, resolver);
     const amounts = await worth.getAmounts(addrs);
     const net = await worth.netWorth(amounts);
 
     response["domain"] = domain;
+    response["avatar"] = avatar;
     Object.assign(response, net);
 
     for (const [asset, addr] of addrs) {
@@ -48,6 +50,16 @@ app.get('/domain/:domain', async (req, res) => {
         response[asset] = assetFull;
     }
 
+    res.json(response);
+});
+
+// Return only the avatar for a given domain
+app.get('/domain/:domain/avatar', async (req, res) => {
+    let response = {};
+    let domain = req.params.domain;
+    const resolver = await resolve.init(domain);
+    const avatar = await resolve.resolveAvatar(resolver);
+    response["avatar"] = avatar;
     res.json(response);
 });
 

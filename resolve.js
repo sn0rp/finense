@@ -17,6 +17,12 @@ export async function init(domain){
     return resolver;
 }
 
+export async function resolveAvatar(resolver) {
+    const avatar = await resolver.getAvatar();
+    let url = avatar.url;
+    return url;
+}
+
 // Resolve all supported coin types to their addresses
 // Unsupported coin types are addressed by the default case
 export async function resolveAddrs(coinTypes, resolver) {
