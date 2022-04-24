@@ -1,5 +1,12 @@
 import fetch from 'node-fetch';
 import 'dotenv/config';
+import {
+    AppError,
+    AssetError,
+    DomainError,
+    UpstreamError
+} from './errors.js';
+import logger from './logger.cjs';
 
 const NOW_NODES = process.env.NOW_NODES;
 const NN_URL = ".nownodes.io/api/v2/address/";
@@ -17,93 +24,118 @@ const BA_PREFIX = "https://api.blockchain.com/v3/exchange/tickers/";
 
 // Iterate over address map to find amounts owned
 export async function getAmounts(addresses) {
-    const amounts = new Map();
-    for (const [key, val] of addresses) {
-        if (BOOKS.has(key)) {
-            const fullURL = `${BOOKS.get(key)}${NN_URL}${val}${NN_SUFFIX}`;
+    try {
+        const amounts = new Map();
+        logger.info("Getting amounts owned for all addresses...");
+        for (const [key, val] of addresses) {
+            if (BOOKS.has(key)) {
+                const fullURL = `${BOOKS.get(key)}${NN_URL}${val}${NN_SUFFIX}`;
+                const response = await fetch(fullURL, {
+                    method: 'GET',
+                    headers: {
+                        'api-key': NOW_NODES,
+                    },
+                }).catch(e => {
+                    throw new UpstreamError();
+                });
+
+                const responseBody = await response.json();
+                try {
+                    const parsedBalance = Number(responseBody.balance);
+                    let formattedBalance = 0.0;
+
+                    switch (key) {
+                        case 'btc':
+                            formattedBalance = parsedBalance / Math.pow(10, 8);
+                            logger.info(`btc balance: ${formattedBalance}`);
+                            break;
+                        case 'ltc':
+                            formattedBalance = parsedBalance / Math.pow(10, 8);
+                            logger.info(`ltc balance: ${formattedBalance}`);
+                            break;
+                        case 'doge':
+                            formattedBalance = parsedBalance / Math.pow(10, 8);
+                            logger.info(`doge balance: ${formattedBalance}`);
+                            break;
+                        case 'eth':
+                            formattedBalance = parsedBalance / Math.pow(10, 18);
+                            logger.info(`eth balance: ${formattedBalance}`);
+                            break;
+                        default:
+                            logger.info(`getAmounts: Asset ${key} is not supported`);
+                            continue;
+                    }
+
+                    const balance = String(formattedBalance);
+                    amounts.set(key, balance);
+                } catch {
+                    throw new UpstreamError();
+                }
+            }
+        }
+        if (amounts.size === 0) throw new AssetError(amounts.values().next().value);
+        logger.info("Finished getting amounts owned");
+        return amounts;
+    } catch(e) {
+        if (e instanceof UpstreamError || e instanceof AssetError) {
+            throw new AppError(e.name, e);
+        } else throw e;
+    }
+}
+
+// Get amount owned by an address for a specified asset
+export async function getSingleAmount(asset, address) {
+    try {
+        let response = {};
+        let amount = "";
+        logger.info(`Getting amount of ${asset} owned by address ${address}`);
+        if (BOOKS.has(asset)) {
+            const fullURL = `${BOOKS.get(asset)}${NN_URL}${address}${NN_SUFFIX}`;
             const response = await fetch(fullURL, {
                 method: 'GET',
                 headers: {
                     'api-key': NOW_NODES,
                 },
-            }).catch(err => {
-                console.log(err);
-                return null;
+            }).catch(e => {
+                throw new UpstreamError();
             });
 
             const responseBody = await response.json();
-            const parsedBalance = Number(responseBody.balance);
-            let formattedBalance = 0.0;
+            try {
+                const parsedBalance = Number(responseBody.balance);
+                let formattedBalance = 0.0;
 
-            switch(key) {
-                case 'btc':
-                    formattedBalance = parsedBalance / Math.pow(10, 8);
-                    break;
-                case 'ltc':
-                    formattedBalance = parsedBalance / Math.pow(10, 8);
-                    break;
-                case 'doge':
-                    formattedBalance = parsedBalance / Math.pow(10, 8);
-                    break;
-                case 'eth':
-                    formattedBalance = parsedBalance / Math.pow(10,18);
-                    break;
-                default:
-                    console.log(`Could not parse ${key} balance, skipping`);
-                    continue;
+                switch (asset) {
+                    case 'btc':
+                        formattedBalance = parsedBalance / Math.pow(10, 8);
+                        break;
+                    case 'ltc':
+                        formattedBalance = parsedBalance / Math.pow(10, 8);
+                        break;
+                    case 'doge':
+                        formattedBalance = parsedBalance / Math.pow(10, 8);
+                        break;
+                    case 'eth':
+                        formattedBalance = parsedBalance / Math.pow(10, 18);
+                        break;
+                    default:
+                        throw new AssetError(asset);
+                }
+
+                amount = String(formattedBalance);
+            } catch {
+                throw new UpstreamError();
             }
+        } else throw new AssetError(asset);
 
-            const balance = String(formattedBalance);
-            amounts.set(key, balance);
-        }
+        response["balance"] = amount;
+        logger.info(`Found amount owned: ${amount}`);
+        return response;
+    } catch(e) {
+        if (e instanceof UpstreamError || e instanceof AssetError) {
+            throw new AppError(e.name, e);
+        } else throw e;
     }
-
-    return amounts;
-}
-
-// Get amount owned by an address for a specified asset
-export async function getSingleAmount(asset, address) {
-    let response = {};
-    let amount = "";
-
-    if (BOOKS.has(asset)) {
-        const fullURL = `${BOOKS.get(asset)}${NN_URL}${address}${NN_SUFFIX}`;
-        const response = await fetch(fullURL, {
-            method: 'GET',
-            headers: {
-                'api-key': NOW_NODES,
-            },
-        }).catch(err => {
-            console.log(err);
-            return null;
-        });
-
-        const responseBody = await response.json();
-        const parsedBalance = Number(responseBody.balance);
-        let formattedBalance = 0.0;
-
-        switch (asset) {
-            case 'btc':
-                formattedBalance = parsedBalance / Math.pow(10, 8);
-                break;
-            case 'ltc':
-                formattedBalance = parsedBalance / Math.pow(10, 8);
-                break;
-            case 'doge':
-                formattedBalance = parsedBalance / Math.pow(10, 8);
-                break;
-            case 'eth':
-                formattedBalance = parsedBalance / Math.pow(10, 18);
-                break;
-            default:
-                console.log(`Could not parse ${asset} balance, skipping`);
-        }
-
-        amount = String(formattedBalance);
-    } else return null;
-
-    response["balance"] = amount;
-    return response;
 }
 
 // Convert asset balance to USD
@@ -113,19 +145,30 @@ export async function toFiat(asset, balance) {
     let bal = Number(balance);
 
     const fullURL = `${BA_PREFIX}${ast}-USD`;
-    const response = await fetch(fullURL, {
-        method: 'GET',
-    }).catch(err => {
-        console.log(err);
-        return null;
-    });
+    logger.info(`Converting ${balance} ${asset} to usd...`);
+    try {
+        const response = await fetch(fullURL, {
+            method: 'GET',
+        }).catch(e => {
+            throw new UpstreamError();
+        });
 
-    const responseBody = await response.json();
-    const price = responseBody.last_trade_price;
-    const fiatBalance = bal * price;
+        const responseBody = await response.json();
+        try {
+            const price = responseBody.last_trade_price;
+            const fiatBalance = bal * price;
 
-    fiatAmount["usd"] = String(fiatBalance);
-    return fiatAmount;
+            fiatAmount["usd"] = String(fiatBalance);
+            logger.info(`Converted to ${fiatBalance} usd`);
+            return fiatAmount;
+        } catch {
+            throw new UpstreamError();
+        }
+    } catch(e) {
+        if (e instanceof UpstreamError) {
+            throw new AppError(e.name, e);
+        } else throw e;
+    }
 }
 
 
@@ -134,15 +177,23 @@ export async function netWorth(balances) {
     let response = {};
     let net = 0.0;
 
-    for (const [asset, balance] of balances) {
-        const fiat = await toFiat(asset, balance);
-        if (!fiat) return null;
-        Object.values(fiat).forEach(value => {
-            let num = Number(value);
-            net += num;
-        });
-    }
+    logger.info("Calculating net worth from passed amounts...");
+    try {
+        for (const [asset, balance] of balances) {
+            const fiat = await toFiat(asset, balance);
+            if (!fiat) throw new UpstreamError();
+            Object.values(fiat).forEach(value => {
+                let num = Number(value);
+                net += num;
+            });
+        }
 
-    response["net"] = String(net);
-    return response;
+        response["net"] = String(net);
+        logger.info(`Net worth is ${net} usd`);
+        return response;
+    } catch(e) {
+        if (e instanceof UpstreamError) {
+            throw new AppError(e.name, e);
+        } else throw e;
+    }
 }
