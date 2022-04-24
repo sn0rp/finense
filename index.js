@@ -14,7 +14,7 @@ import {
 
 const PORT = process.env.PORT;
 
-const app = express()
+export const app = express()
 
 // Return all data (domain, addresses, amounts owned, fiat values, net worth)
 app.get('/domain/:domain', async (req, res, next) => {
@@ -50,7 +50,7 @@ app.get('/domain/:domain', async (req, res, next) => {
 });
 
 // Return all supported address records for a given domain
-app.get('/domain/:domain/address', async (req, res) => {
+app.get('/domain/:domain/address', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         const resolver = await resolve.init(domain);
@@ -63,7 +63,7 @@ app.get('/domain/:domain/address', async (req, res) => {
 });
 
 // Return amounts owned for all supported address records
-app.get('/domain/:domain/amount', async (req, res) => {
+app.get('/domain/:domain/amount', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         const resolver = await resolve.init(domain);
@@ -77,7 +77,7 @@ app.get('/domain/:domain/amount', async (req, res) => {
 });
 
 // Return only the avatar for a given domain
-app.get('/domain/:domain/avatar', async (req, res) => {
+app.get('/domain/:domain/avatar', async (req, res, next) => {
     try {
         let response = {};
         let domain = req.params.domain;
@@ -91,7 +91,7 @@ app.get('/domain/:domain/avatar', async (req, res) => {
 });
 
 // Return sum of balances in local currency for all supported addresses
-app.get('/domain/:domain/net', async (req, res) => {
+app.get('/domain/:domain/net', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         const resolver = await resolve.init(domain);
@@ -106,7 +106,7 @@ app.get('/domain/:domain/net', async (req, res) => {
 });
 
 // Return a domain's address, amount owned, and fiat value for one asset
-app.get('/domain/:domain/:asset', async (req, res) => {
+app.get('/domain/:domain/:asset', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         let asset = req.params.asset;
@@ -122,7 +122,7 @@ app.get('/domain/:domain/:asset', async (req, res) => {
 });
 
 // Return address of a specified asset for a given domain
-app.get('/domain/:domain/:asset/address', async (req, res) => {
+app.get('/domain/:domain/:asset/address', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         let asset = req.params.asset;
@@ -135,7 +135,7 @@ app.get('/domain/:domain/:asset/address', async (req, res) => {
 });
 
 // Return amount owned of a specified asset for a given domain
-app.get('/domain/:domain/:asset/amount', async (req, res) => {
+app.get('/domain/:domain/:asset/amount', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         let asset = req.params.asset;
@@ -149,7 +149,7 @@ app.get('/domain/:domain/:asset/amount', async (req, res) => {
 });
 
 // Return value in local currency of amount owned for one asset
-app.get('/domain/:domain/:asset/fiat', async (req, res) => {
+app.get('/domain/:domain/:asset/fiat', async (req, res, next) => {
     try {
         let domain = req.params.domain;
         let asset = req.params.asset;
@@ -162,6 +162,14 @@ app.get('/domain/:domain/:asset/fiat', async (req, res) => {
         next(e);
     }
 });
+
+app.get('/', (req, res) => {
+    res.status(200).send("Coming soon!");
+}) 
+
+app.get('*', (req, res) => {
+    res.status(400).send("Route not allowed");
+}) 
 
 app.use(pinoHTTP());;
 app.use(show);

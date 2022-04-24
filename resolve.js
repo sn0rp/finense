@@ -21,6 +21,7 @@ const provider = new ethers.providers.InfuraProvider("homestead", {
 // Establish resolver for a domain, should be called as early as possible
 export async function init(domain){
     try {
+        if (!domain) throw new DomainError("");
         const resolver = await provider.getResolver(domain);
         if (resolver) {
             logger.info(`Established resolver for ${domain}`);
@@ -52,7 +53,7 @@ export async function resolveAvatar(resolver) {
 // Unsupported coin types are addressed by the default case
 export async function resolveAddrs(coinTypes, resolver) {
     try {
-        if (!resolver) throw new UpstreamError();
+        if (!resolver || !coinTypes) throw new UpstreamError();
         const allAddrs = new Map();
         logger.info("Resolving address records...");
         for (let index = 0; index < coinTypes.length; ++index) {
@@ -82,7 +83,7 @@ export async function resolveAddrs(coinTypes, resolver) {
                     logger.info(`Coin Type "${thisCoin}" is not supported`);
             }
         }
-        if (allAddrs.size === 0) throw new AssetError(allAddrs.values().next().value);
+        if (allAddrs.size === 0 && coinTypes.length !== 0) throw new AssetError(allAddrs.values().next().value);
         logger.info("Finished resolving address records");
         return allAddrs;
     } catch(e) {
@@ -95,7 +96,7 @@ export async function resolveAddrs(coinTypes, resolver) {
 // Resolve domain to a specified address type
 export async function resolveSingleAddr(asset, resolver) {
     try {
-        if (!resolver) throw new UpstreamError();
+        if (!asset || !resolver) throw new UpstreamError();
         let response = {};
         let addr = "";
         logger.info(`Resolving ${asset} address record...`);
@@ -131,6 +132,7 @@ export async function resolveSingleAddr(asset, resolver) {
 // Return a list of all coin types for which the domain has address records
 export async function getCoinTypes(domain) {
     try {
+        if (!domain) throw new UpstreamError();
         logger.info(`Fetching coinTypes for ${domain}...`);
         const response = await fetch("https://api.thegraph.com/subgraphs/name/ensdomains/ens", {
             method: 'POST',

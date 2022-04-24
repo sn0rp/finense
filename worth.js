@@ -25,6 +25,7 @@ const BA_PREFIX = "https://api.blockchain.com/v3/exchange/tickers/";
 // Iterate over address map to find amounts owned
 export async function getAmounts(addresses) {
     try {
+        if (!addresses) throw new UpstreamError();
         const amounts = new Map();
         logger.info("Getting amounts owned for all addresses...");
         for (const [key, val] of addresses) {
@@ -86,6 +87,7 @@ export async function getAmounts(addresses) {
 // Get amount owned by an address for a specified asset
 export async function getSingleAmount(asset, address) {
     try {
+        if (!asset || !address) throw new UpstreamError();
         let response = {};
         let amount = "";
         logger.info(`Getting amount of ${asset} owned by address ${address}`);
@@ -140,18 +142,21 @@ export async function getSingleAmount(asset, address) {
 
 // Convert asset balance to USD
 export async function toFiat(asset, balance) {
-    let fiatAmount = {};
-    const ast = asset.toUpperCase();
-    let bal = Number(balance);
-
-    const fullURL = `${BA_PREFIX}${ast}-USD`;
-    logger.info(`Converting ${balance} ${asset} to usd...`);
     try {
+        if (!asset || !balance) throw new UpstreamError();
+        let fiatAmount = {};
+        const ast = asset.toUpperCase();
+        let bal = Number(balance);
+        
+        const fullURL = `${BA_PREFIX}${ast}-USD`;
+        logger.info(`Converting ${balance} ${asset} to usd...`);
         const response = await fetch(fullURL, {
             method: 'GET',
         }).catch(e => {
             throw new UpstreamError();
         });
+
+        if (response.status === 400) throw new AssetError(asset);
 
         const responseBody = await response.json();
         try {
@@ -165,20 +170,20 @@ export async function toFiat(asset, balance) {
             throw new UpstreamError();
         }
     } catch(e) {
-        if (e instanceof UpstreamError) {
+        if (e instanceof AssetError || e instanceof UpstreamError) {
             throw new AppError(e.name, e);
         } else throw e;
     }
 }
 
-
 // Return the sum of all retrieved amounts in USD
 export async function netWorth(balances) {
-    let response = {};
-    let net = 0.0;
-
-    logger.info("Calculating net worth from passed amounts...");
     try {
+        if (!balances) throw new UpstreamError();
+        let response = {};
+        let net = 0.0;
+
+        logger.info("Calculating net worth from passed amounts...");
         for (const [asset, balance] of balances) {
             const fiat = await toFiat(asset, balance);
             if (!fiat) throw new UpstreamError();

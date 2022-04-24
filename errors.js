@@ -20,14 +20,14 @@ export class Mistake extends Error {
 
 export class DomainError extends Mistake {
     constructor(domain) {
-        super(`Domain "${domain}" not found`);
+        super(`Domain "${domain}" not found or missing address records`);
         this.code = 404;
     }
 }
 
 export class AssetError extends Mistake {
     constructor(asset) {
-        super(`Asset ${asset} is not supported`);
+        super(`Asset "${asset}" is not supported`);
         this.code = 400;
     }
 }
