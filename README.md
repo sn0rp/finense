@@ -10,7 +10,7 @@
 </div>
 
 ## Notes on Version 2
-The original implementation of this software was written in Go and reliant on the `go-ens` module to resolve ENS records. Unfortunately, that module was limited in its ability to satisfy the vision of *Finense*, so another approach was necessary. Version 2 uses `node.js` and `express.js`, as I found `ethers.js` provides the most suitable tools to interact with the Ethereum Name Service. Initial development of the JavaScript implementation was done in a [separate repository](https://github.com/snorper/finense-old), now archived, until it approximately reached feature parity with Version 1. Please see that repository for preliminary commits on this version, or older commits in this repository for the antiquated Go implementation.
+The original implementation of this software was written in Go and reliant on `go-ens`, which unfortunately was not suitable for the necessary functionality. Version 2 instead uses `ethers.js` to interact with the Ethereum Name Service. Initial development of the JavaScript implementation was done in a [separate repository](https://github.com/snorper/finense-old), now archived, until it approximately reached feature parity with Version 1. Please see that repository for preliminary commits on this version, or older commits in this repository for the antiquated Go implementation.
 
 ## Table of Contents
 - [Notes on Version 2](#notes-on-version-2)
@@ -22,18 +22,27 @@ The original implementation of this software was written in Go and reliant on th
 - [License](#license)
 
 ## Purpose
-*Finense* aims to simplify the process of evaluating one's cryptocurrency portfolio using ENS domains. As of now, the intent is to provide an API and a convenient web frontend to display amounts owned for supported assets. The end product of this software should be one's "Crypto Net Worth" in USD. This software is *not* built to allow any modification of ENS or blockchain data and only `GET` requests are supported.
+*Finense* aims to simplify the process of evaluating one's cryptocurrency portfolio using ENS domains. As of now, the intent is to provide both an API and a convenient web frontend to display information regarding supported assets. The original goal of this software was to evaluate a domain's "Net Worth" in USD; this goal has been satisfied. This software is *not* built to allow any modification of ENS or blockchain data and only `GET` requests are supported.
 
-This software was created to meet a personal need. For this reason, I assume it may be of value to others.
+This software was created to meet a personal need, although the utility is self-evident.
 
 ## Usage
-*TO DO*
+A public implementation of the API with proper documentation is forthcoming, so allowed routes are listed here with brief descriptions in the meantime:
+
+- `/domain/{your domain}`: all data exposed by other routes
+- `/domain/{your domain}/address`: all supported address records
+- `/domain/{your domain}/amount`: balances for all supported address records
+- `/domain/{your domain}/avatar`: avatar url (null if not applicable)
+- `/domain/{your domain}/net`: net worth of supported address records
+- `/domain/{your domain}/{asset ticket}`: address, balance, and USD value for a specific asset
+- `/domain/{your domain}/{asset ticket}/address`: address for a specific asset
+- `/domain/{your domain}/{asset ticket}/amount`: balance for a specific asset
+- `/domain/{your domain}/{asset ticket}/fiat`: USD value of balance for a specific asset
+
+Note that this API currently supports four assets: btc, ltc, eth, doge.
 
 ## Dependencies
-*TO DO*
-
-## Self-Hosting
-*TO DO*
+Proper functionality is dependent upon other upstream APIs remaining accessible. If at any time these APIs cannot be reached, *Finense* is expected to return an "UpstreamError" with status code 502. Beyond this, all routes and underlying functions are tested. Errors should only be returned if the user supplies a dissallowed or misspelled request.
 
 ## Roadmap
 - [X] Determine best approach in detail
@@ -59,12 +68,12 @@ This software was created to meet a personal need. For this reason, I assume it 
         - [X] `/:domain/net` provide only net worth
 - [ ] Testing
     - [X] Affirm implementation of all necessary error handling
-    - [ ] Implement proper logging
-    - [ ] Implement all necessary tests
+    - [X] Implement proper logging
+    - [X] Implement all necessary tests
     - [ ] Automate testing with GitHub workflows
 - [ ] Fully document API
+- [ ] Build a user-friendly web frontend
 - [ ] Deploy API for public use
-- [ ] Build a minimal, user-friendly web frontend
 
 ## License
 All original software within this repository is licensed under the GPL-3.0 License.

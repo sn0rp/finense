@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 import { default as pinoHTTP } from 'pino-http';
 import 'dotenv/config';
 import * as resolve from './resolve.js';
@@ -172,6 +173,7 @@ app.get('*', (req, res) => {
 }) 
 
 app.use(pinoHTTP());;
+app.use(helmet());
 app.use(show);
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () => logger.info(`Server started on port ${PORT}`));
