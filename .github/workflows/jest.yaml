@@ -1,0 +1,32 @@
+name: Jest
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: finense
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Create env file
+        run: |
+          touch .env
+          cat <<EOF > .env
+          INFURA_ID=${{secrets.INFURA_ID}}
+          INFURA_SECRET=${{secrets.INFURA_SECRET}}
+          NOW_NODES=${{secrets.NOW_NODES}}
+          PORT=${{secrets.PORT}}
+          EOF
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run the tests
+        run: npm run test
