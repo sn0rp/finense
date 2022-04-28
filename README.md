@@ -66,11 +66,11 @@ Proper functionality is dependent upon other upstream APIs remaining accessible.
         - [X] `/:domain/:asset/amount` provide only amount owned for a specific asset
         - [X] `/:domain/:asset/fiat` provide only value in USD of amount owned for a specific asset
         - [X] `/:domain/net` provide only net worth
-- [ ] Testing
+- [X] Testing
     - [X] Affirm implementation of all necessary error handling
     - [X] Implement proper logging
     - [X] Implement all necessary tests
-    - [ ] Automate testing with GitHub workflows
+    - [X] Automate testing with GitHub workflows
 - [ ] Fully document API
 - [ ] Build a user-friendly web frontend
 - [ ] Deploy API for public use
