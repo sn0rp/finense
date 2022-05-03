@@ -1,9 +1,7 @@
 import fetch from 'node-fetch';
 import 'dotenv/config';
 import {
-    AppError,
     AssetError,
-    DomainError,
     throwProperly,
     UpstreamError
 } from './errors.js';

@@ -1,9 +1,8 @@
-import { ethers } from 'ethers';
+import ethers from 'ethers';
 import fetch from 'node-fetch';
 import 'dotenv/config';
 import logger from './logger.cjs';
 import {
-    AppError,
     ArgError,
     AssetError,
     DomainError,

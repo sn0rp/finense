@@ -5,13 +5,7 @@ import 'dotenv/config';
 import * as resolve from './resolve.js';
 import * as worth from './worth.js';
 import logger from './logger.cjs';
-import {
-    AppError,
-    AssetError,
-    DomainError,
-    show,
-    UpstreamError
-} from './errors.js';
+import { show } from './errors.js';
 
 const PORT = process.env.PORT;
 
