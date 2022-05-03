@@ -4,9 +4,11 @@ import 'dotenv/config';
 import logger from './logger.cjs';
 import {
     AppError,
+    ArgError,
     AssetError,
     DomainError,
-    UpstreamError
+    UpstreamError,
+    throwProperly
 } from './errors.js';
 
 const INFURA_ID = process.env.INFURA_ID;
@@ -21,17 +23,13 @@ const provider = new ethers.providers.InfuraProvider("homestead", {
 // Establish resolver for a domain, should be called as early as possible
 export async function init(domain){
     try {
-        if (!domain) throw new DomainError("");
+        if (!domain) throw new ArgError;
         const resolver = await provider.getResolver(domain);
         if (resolver) {
             logger.info(`Established resolver for ${domain}`);
             return resolver;
         } else throw new DomainError(domain);
-    } catch(e) {
-        if (e instanceof DomainError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }
 
 // Resolve domain to avatar record, if applicable
@@ -53,7 +51,7 @@ export async function resolveAvatar(resolver) {
 // Unsupported coin types are addressed by the default case
 export async function resolveAddrs(coinTypes, resolver) {
     try {
-        if (!resolver || !coinTypes) throw new UpstreamError();
+        if (!resolver || !coinTypes) throw new ArgError();
         const allAddrs = new Map();
         logger.info("Resolving address records...");
         for (let index = 0; index < coinTypes.length; ++index) {
@@ -86,17 +84,13 @@ export async function resolveAddrs(coinTypes, resolver) {
         if (allAddrs.size === 0 && coinTypes.length !== 0) throw new AssetError(allAddrs.values().next().value);
         logger.info("Finished resolving address records");
         return allAddrs;
-    } catch(e) {
-        if (e instanceof UpstreamError || e instanceof AssetError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }
 
 // Resolve domain to a specified address type
 export async function resolveSingleAddr(asset, resolver) {
     try {
-        if (!asset || !resolver) throw new UpstreamError();
+        if (!asset || !resolver) throw new ArgError();
         let response = {};
         let addr = "";
         logger.info(`Resolving ${asset} address record...`);
@@ -122,17 +116,13 @@ export async function resolveSingleAddr(asset, resolver) {
         }
         response['address'] = addr;
         return response;
-    } catch(e) {
-        if (e instanceof UpstreamError || e instanceof AssetError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }
 
 // Return a list of all coin types for which the domain has address records
 export async function getCoinTypes(domain) {
     try {
-        if (!domain) throw new UpstreamError();
+        if (!domain) throw new ArgError();
         logger.info(`Fetching coinTypes for ${domain}...`);
         const response = await fetch("https://api.thegraph.com/subgraphs/name/ensdomains/ens", {
             method: 'POST',
@@ -162,9 +152,5 @@ export async function getCoinTypes(domain) {
         } catch(e) {
             throw new DomainError(domain);
         }
-    } catch(e) {
-        if (e instanceof UpstreamError || e instanceof DomainError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }

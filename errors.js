@@ -3,6 +3,13 @@
 
 import logger from "./logger.cjs";
 
+const eList = [
+    'ArgError',
+    'AssetError',
+    'DomainError',
+    'UpstreamError'
+]
+
 export class AppError extends Error {
     constructor(message, cause) {
         super(message);
@@ -32,11 +39,24 @@ export class AssetError extends Mistake {
     }
 }
 
+export class ArgError extends Mistake {
+    constructor() {
+        super("Expected parameter not dound");
+        this.code = 400;
+    }
+}
+
 export class UpstreamError extends Mistake {
     constructor() {
         super("Upstream API returned an unexpected response");
         this.code = 502;
     }
+}
+
+export function throwProperly(e) {
+    if (eList.includes(e.name)) {
+        throw new AppError(e.name, e);
+    } else throw e;
 }
 
 // Custom error handler for Express

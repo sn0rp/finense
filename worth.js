@@ -4,6 +4,7 @@ import {
     AppError,
     AssetError,
     DomainError,
+    throwProperly,
     UpstreamError
 } from './errors.js';
 import logger from './logger.cjs';
@@ -25,7 +26,7 @@ const BA_PREFIX = "https://api.blockchain.com/v3/exchange/tickers/";
 // Iterate over address map to find amounts owned
 export async function getAmounts(addresses) {
     try {
-        if (!addresses) throw new UpstreamError();
+        if (!addresses) throw new ArgError();
         const amounts = new Map();
         logger.info("Getting amounts owned for all addresses...");
         for (const [key, val] of addresses) {
@@ -77,17 +78,13 @@ export async function getAmounts(addresses) {
         if (amounts.size === 0) throw new AssetError(amounts.values().next().value);
         logger.info("Finished getting amounts owned");
         return amounts;
-    } catch(e) {
-        if (e instanceof UpstreamError || e instanceof AssetError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }
 
 // Get amount owned by an address for a specified asset
 export async function getSingleAmount(asset, address) {
     try {
-        if (!asset || !address) throw new UpstreamError();
+        if (!asset || !address) throw new ArgError();
         let response = {};
         let amount = "";
         logger.info(`Getting amount of ${asset} owned by address ${address}`);
@@ -133,17 +130,13 @@ export async function getSingleAmount(asset, address) {
         response["balance"] = amount;
         logger.info(`Found amount owned: ${amount}`);
         return response;
-    } catch(e) {
-        if (e instanceof UpstreamError || e instanceof AssetError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }
 
 // Convert asset balance to USD
 export async function toFiat(asset, balance) {
     try {
-        if (!asset || !balance) throw new UpstreamError();
+        if (!asset || !balance) throw new ArgError();
         let fiatAmount = {};
         const ast = asset.toUpperCase();
         let bal = Number(balance);
@@ -169,17 +162,13 @@ export async function toFiat(asset, balance) {
         } catch {
             throw new UpstreamError();
         }
-    } catch(e) {
-        if (e instanceof AssetError || e instanceof UpstreamError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }
 
 // Return the sum of all retrieved amounts in USD
 export async function netWorth(balances) {
     try {
-        if (!balances) throw new UpstreamError();
+        if (!balances) throw new ArgError();
         let response = {};
         let net = 0.0;
 
@@ -196,9 +185,5 @@ export async function netWorth(balances) {
         response["net"] = String(net);
         logger.info(`Net worth is ${net} usd`);
         return response;
-    } catch(e) {
-        if (e instanceof UpstreamError) {
-            throw new AppError(e.name, e);
-        } else throw e;
-    }
+    } catch(e) { throwProperly(e) }
 }

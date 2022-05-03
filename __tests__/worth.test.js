@@ -13,8 +13,8 @@ describe('worth', () => {
             await expect(amounts).toBeInstanceOf(Map);
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing argument", async () => {
-            await expect(worth.getAmounts()).rejects.toThrow("UpstreamError");
+        it("should throw AppError: ArgError for missing argument", async () => {
+            await expect(worth.getAmounts()).rejects.toThrow("ArgError");
         }, 30000);
     });
 
@@ -32,8 +32,8 @@ describe('worth', () => {
                 .rejects.toThrow("AssetError");
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing arguments", async () => {
-            await expect(worth.getSingleAmount()).rejects.toThrow("UpstreamError");
+        it("should throw AppError: ArgError for missing arguments", async () => {
+            await expect(worth.getSingleAmount()).rejects.toThrow("ArgError");
         }, 30000);
     });
 
@@ -49,8 +49,8 @@ describe('worth', () => {
             await expect(worth.toFiat("unsupported", "1")).rejects.toThrow("AssetError");
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing arguments", async () => {
-            await expect(worth.toFiat()).rejects.toThrow("UpstreamError");
+        it("should throw AppError: ArgError for missing arguments", async () => {
+            await expect(worth.toFiat()).rejects.toThrow("ArgError");
         }, 30000);
     });
 
@@ -68,8 +68,8 @@ describe('worth', () => {
             }));
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing argument", async () => {
-            await expect(worth.netWorth()).rejects.toThrow("UpstreamError");
+        it("should throw AppError: ArgError for missing argument", async () => {
+            await expect(worth.netWorth()).rejects.toThrow("ArgError");
         }, 30000);
     });
 });

@@ -10,8 +10,8 @@ describe('resolve', () => {
             await expect(resolve.init("snorp")).rejects.toThrow("DomainError");
         }, 30000);
 
-        it("should throw AppError: DomainError for missing argument", async () => {
-            await expect(resolve.init()).rejects.toThrow("DomainError");
+        it("should throw AppError: ArgError for missing argument", async () => {
+            await expect(resolve.init()).rejects.toThrow("ArgError");
         }, 30000);
     });
 
@@ -55,8 +55,8 @@ describe('resolve', () => {
             await expect(addrs).toEqual(expectedAddrs);
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing arguments", async () => {
-            await expect(resolve.resolveAddrs()).rejects.toThrow("UpstreamError");
+        it("should throw AppError: ArgError for missing arguments", async () => {
+            await expect(resolve.resolveAddrs()).rejects.toThrow("ArgError");
         }, 30000);
     });
 
@@ -74,9 +74,9 @@ describe('resolve', () => {
                 .rejects.toThrow("AssetError");
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing arguments", async () => {
+        it("should throw AppError: ArgError for missing arguments", async () => {
             const resolver = await resolve.init("snorp.eth");
-            await expect(resolve.resolveSingleAddr()).rejects.toThrow("UpstreamError");
+            await expect(resolve.resolveSingleAddr()).rejects.toThrow("ArgError");
         }, 30000);
     });
 
@@ -91,8 +91,8 @@ describe('resolve', () => {
             await expect(resolve.getCoinTypes("snorp")).rejects.toThrow("DomainError");
         }, 30000);
 
-        it("should throw AppError: UpstreamError for missing argument", async () => {
-            await expect(resolve.getCoinTypes()).rejects.toThrow("UpstreamError");
+        it("should throw AppError: ArgError for missing argument", async () => {
+            await expect(resolve.getCoinTypes()).rejects.toThrow("ArgError");
         }, 30000);
     });
 });

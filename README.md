@@ -1,12 +1,15 @@
 <h1 align="center">FinENSe</h1>
-<div align="center"><img alt="finense logo" style="width:62.5%; height: auto" src="finense_new_logo.png"></div>
+<div align="center"><img alt="finense logo" style="width:56.25%; height: auto" src="finense_new_logo.png"></div>
 <p align ="center">
   <i>RESTful API to aggregate ENS records and estimate net worth</i>
 </p>
 <div align="center">
-  <a href="LICENSE"><img alt="License badge" src="https://img.shields.io/github/license/snorper/finense?color=brightgreen"></a>
+  <a href="https://github.com/Snorper/finense/actions"><img alt="Workflow" src="https://img.shields.io/github/workflow/status/Snorper/finense/Jest"></a>
   <a href="https://github.com/snorper/finense/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/snorper/finense?color=brightgreen"></a>
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/snorper/finense?color=brightgreen">
+  <a href="LICENSE"><img alt="License badge" src="https://img.shields.io/github/license/snorper/finense?color=brightgreen"></a>
+  <br>
+  <a href="https://github.com/Snorper/finense/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/snorper/finense?style=social"></a>
+  <a href="https://github.com/Snorper/finense/watchers"><img alt="GitHub Watchers" src="https://img.shields.io/github/watchers/snorper/finense?style=social"></a>
 </div>
 
 ## Notes on Version 2
@@ -71,9 +74,8 @@ Proper functionality is dependent upon other upstream APIs remaining accessible.
     - [X] Implement proper logging
     - [X] Implement all necessary tests
     - [X] Automate testing with GitHub workflows
+- [ ] Implement Docker
 - [ ] Fully document API
-- [ ] Build a user-friendly web frontend
-- [ ] Deploy API for public use
 
 ## License
 All original software within this repository is licensed under the GPL-3.0 License.
