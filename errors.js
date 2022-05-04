@@ -2,13 +2,9 @@
 // No "AvatarError" necessary as null is a valid response
 
 import logger from "./logger.cjs";
+import { config } from './config.js';
 
-const eList = [
-    'ArgError',
-    'AssetError',
-    'DomainError',
-    'UpstreamError'
-]
+const ERROR_LIST = config.ERROR_LIST;
 
 export class AppError extends Error {
     constructor(message, cause) {
@@ -54,7 +50,7 @@ export class UpstreamError extends Mistake {
 }
 
 export function throwProperly(e) {
-    if (eList.includes(e.name)) {
+    if (ERROR_LIST.includes(e.name)) {
         throw new AppError(e.name, e);
     } else throw e;
 }
