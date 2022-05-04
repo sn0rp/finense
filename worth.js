@@ -12,58 +12,39 @@ const NN_URL = config.NN_URL;
 const NN_SUFFIX = config.NN_SUFFIX;
 const BOOKS = config.BOOKS;
 const BA_PREFIX = config.BA_PREFIX;
+const COIN_NAMES = config.COIN_NAMES;
+const SCALE = config.SCALE;
 
 // Iterate over address map to find amounts owned
 export async function getAmounts(addresses) {
     try {
         if (!addresses) throw new ArgError();
         const amounts = new Map();
+
         logger.info("Getting amounts owned for all addresses...");
         for (const [key, val] of addresses) {
-            if (BOOKS[key]) {
-                const fullURL = `${BOOKS[key]}${NN_URL}${val}${NN_SUFFIX}`;
-                const response = await fetch(fullURL, {
-                    method: 'GET',
-                    headers: {
-                        'api-key': NOW_NODES,
-                    },
-                }).catch(e => {
-                    throw new UpstreamError();
-                });
+            if (!BOOKS[key]) continue;
+            const fullURL = `${BOOKS[key]}${NN_URL}${val}${NN_SUFFIX}`;
 
-                const responseBody = await response.json();
-                try {
-                    const parsedBalance = Number(responseBody.balance);
-                    let formattedBalance = 0.0;
+            const response = await fetch(fullURL, {
+                method: 'GET',
+                headers: {
+                    'api-key': NOW_NODES,
+                },
+            }).catch(e => { throw new UpstreamError });
+            const responseBody = await response.json();
 
-                    switch (key) {
-                        case 'btc':
-                            formattedBalance = parsedBalance / Math.pow(10, 8);
-                            logger.info(`btc balance: ${formattedBalance}`);
-                            break;
-                        case 'ltc':
-                            formattedBalance = parsedBalance / Math.pow(10, 8);
-                            logger.info(`ltc balance: ${formattedBalance}`);
-                            break;
-                        case 'doge':
-                            formattedBalance = parsedBalance / Math.pow(10, 8);
-                            logger.info(`doge balance: ${formattedBalance}`);
-                            break;
-                        case 'eth':
-                            formattedBalance = parsedBalance / Math.pow(10, 18);
-                            logger.info(`eth balance: ${formattedBalance}`);
-                            break;
-                        default:
-                            logger.info(`getAmounts: Asset ${key} is not supported`);
-                            continue;
-                    }
-
-                    const balance = String(formattedBalance);
-                    amounts.set(key, balance);
-                } catch {
-                    throw new UpstreamError();
+            try {
+                if (!COIN_NAMES.includes(key)) {
+                    logger.info(`getAmounts: Asset ${key} is not supported`);
+                    continue;
                 }
-            }
+                const parsedBalance = Number(responseBody.balance);
+                const formattedBalance = parsedBalance / Math.pow(10, SCALE[key]);
+                logger.info(`${key} balance: ${formattedBalance}`);
+                const balance = String(formattedBalance);
+                amounts.set(key, balance);
+            } catch { throw new UpstreamError() }
         }
         if (amounts.size === 0) throw new AssetError(amounts.values().next().value);
         logger.info("Finished getting amounts owned");
@@ -74,59 +55,38 @@ export async function getAmounts(addresses) {
 // Get amount owned by an address for a specified asset
 export async function getSingleAmount(asset, address) {
     try {
-        if (!asset || !address) throw new ArgError();
-        let response = {};
+        if (arguments.length !== 2) throw new ArgError();
+        let apiResponse = {};
         let amount = "";
+
         logger.info(`Getting amount of ${asset} owned by address ${address}`);
-        if (BOOKS[asset]) {
-            const fullURL = `${BOOKS[asset]}${NN_URL}${address}${NN_SUFFIX}`;
-            const response = await fetch(fullURL, {
-                method: 'GET',
-                headers: {
-                    'api-key': NOW_NODES,
-                },
-            }).catch(e => {
-                throw new UpstreamError();
-            });
+        if (!BOOKS[asset]) throw new AssetError(asset);
+        const fullURL = `${BOOKS[asset]}${NN_URL}${address}${NN_SUFFIX}`;
+        const response = await fetch(fullURL, {
+            method: 'GET',
+            headers: {
+                'api-key': NOW_NODES,
+            },
+        }).catch(e => { throw new UpstreamError() });
+        const responseBody = await response.json();
 
-            const responseBody = await response.json();
-            try {
-                const parsedBalance = Number(responseBody.balance);
-                let formattedBalance = 0.0;
+        try {
+            if (!COIN_NAMES.includes(asset)) throw new AssetError(asset);
+            const parsedBalance = Number(responseBody.balance);
+            const formattedBalance = parsedBalance / Math.pow(10, SCALE[asset]);
+            amount = String(formattedBalance);
+        } catch { throw new UpstreamError() }
 
-                switch (asset) {
-                    case 'btc':
-                        formattedBalance = parsedBalance / Math.pow(10, 8);
-                        break;
-                    case 'ltc':
-                        formattedBalance = parsedBalance / Math.pow(10, 8);
-                        break;
-                    case 'doge':
-                        formattedBalance = parsedBalance / Math.pow(10, 8);
-                        break;
-                    case 'eth':
-                        formattedBalance = parsedBalance / Math.pow(10, 18);
-                        break;
-                    default:
-                        throw new AssetError(asset);
-                }
-
-                amount = String(formattedBalance);
-            } catch {
-                throw new UpstreamError();
-            }
-        } else throw new AssetError(asset);
-
-        response["balance"] = amount;
+        apiResponse["balance"] = amount;
         logger.info(`Found amount owned: ${amount}`);
-        return response;
+        return apiResponse;
     } catch(e) { throwProperly(e) }
 }
 
 // Convert asset balance to USD
 export async function toFiat(asset, balance) {
     try {
-        if (!asset || !balance) throw new ArgError();
+        if (arguments.length !== 2) throw new ArgError();
         let fiatAmount = {};
         const ast = asset.toUpperCase();
         let bal = Number(balance);

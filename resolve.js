@@ -12,8 +12,8 @@ import {
 
 const INFURA_ID = config.INFURA_ID;
 const INFURA_SECRET = config.INFURA_SECRET;
-const COIN_TYPES = config.coin_types;
-const COIN_NAMES = config.coin_names;
+const COIN_TYPES = config.COIN_TYPES;
+const COIN_NAMES = config.COIN_NAMES;
 
 // Connect to Ethereum Mainnet using Infura
 const provider = new ethers.providers.InfuraProvider("homestead", {

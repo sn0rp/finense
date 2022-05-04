@@ -8,28 +8,34 @@ export const config = {
     "NN_URL": ".nownodes.io/api/v2/address/", // Common static component of NOWNodes endpoints
     "NN_SUFFIX": "?details=basic", // Common static component of NOWNodes endpoints
     "BA_PREFIX": "https://api.blockchain.com/v3/exchange/tickers/", // Common static component of Blockchain.com endpoints
-    "BOOKS": { // Dynamic components of NOWNodes endpoints
+    "BOOKS": { // (Ordered) Dynamic components of NOWNodes endpoints
         "btc": "https://btcbook",
         "ltc": "https://ltcbook",
         "doge": "https://dogebook",
         "eth": "https://eth-blockbook"
     },
-    "error_list": [ // Objects from './errors.js' for error checking
+    "ERROR_LIST": [ // Objects from './errors.js' for error checking
         "ArgError",
         "AssetError",
         "DomainError",
         "UpstreamError"
     ],
-    "coin_types": [ // SLIP-0044 coin types for supported assets
+    "COIN_TYPES": [ // (Ordered) SLIP-0044 coin types for supported assets
         "0",
         "2",
         "3",
         "60"
     ],
-    "coin_names": [ // Ordered ticker symbols corresponding to coin_types
+    "COIN_NAMES": [ // (Ordered) ticker symbols corresponding to coin_types
         "btc",
         "ltc",
         "doge",
         "eth"
-    ]
+    ],
+    "SCALE": { // (Ordered) We divide raw balance by this number to get native balance
+        "btc": 8,
+        "ltc": 8,
+        "doge": 8,
+        "eth": 18
+    }
 }
