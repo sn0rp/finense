@@ -12,6 +12,8 @@ import {
 
 const INFURA_ID = config.INFURA_ID;
 const INFURA_SECRET = config.INFURA_SECRET;
+const COIN_TYPES = config.coin_types;
+const COIN_NAMES = config.coin_names;
 
 // Connect to Ethereum Mainnet using Infura
 const provider = new ethers.providers.InfuraProvider("homestead", {
@@ -50,35 +52,20 @@ export async function resolveAvatar(resolver) {
 // Unsupported coin types are addressed by the default case
 export async function resolveAddrs(coinTypes, resolver) {
     try {
-        if (!resolver || !coinTypes) throw new ArgError();
+        if (arguments.length !== 2) throw new ArgError();
         const allAddrs = new Map();
         logger.info("Resolving address records...");
         for (let index = 0; index < coinTypes.length; ++index) {
             const thisCoin = coinTypes[index];
-            switch (thisCoin) {
-                case '0':
-                    let btcAddr = await resolver.getAddress(thisCoin);
-                    allAddrs.set("btc", btcAddr);
-                    logger.info(`Resolved btc address: ${btcAddr}`);
-                    break;
-                case '2':
-                    let ltcAddr = await resolver.getAddress(thisCoin);
-                    allAddrs.set("ltc", ltcAddr);
-                    logger.info(`Resolved ltc address: ${ltcAddr}`);
-                    break;
-                case '3':
-                    let dogeAddr = await resolver.getAddress(thisCoin);
-                    allAddrs.set("doge", dogeAddr);
-                    logger.info(`Resolved doge address: ${dogeAddr}`);
-                    break;
-                case '60':
-                    let ethAddr = await resolver.getAddress(thisCoin);
-                    allAddrs.set("eth", ethAddr);
-                    logger.info(`Resolved eth address: ${ethAddr}`);
-                    break;
-                default:
-                    logger.info(`Coin Type "${thisCoin}" is not supported`);
+            if (!COIN_TYPES.includes(thisCoin)) {
+                logger.info(`Coin Type "${thisCoin}" is not supported`);
+                continue;
             }
+            const cIndex = COIN_TYPES.indexOf(thisCoin);
+            const thisAddr = await resolver.getAddress(thisCoin);
+            const thisCoinName = COIN_NAMES[cIndex];
+            allAddrs.set(thisCoinName, thisAddr);
+            logger.info(`Resolved ${thisCoinName} address: ${thisAddr}`);
         }
         if (allAddrs.size === 0 && coinTypes.length !== 0) throw new AssetError(allAddrs.values().next().value);
         logger.info("Finished resolving address records");
@@ -89,30 +76,14 @@ export async function resolveAddrs(coinTypes, resolver) {
 // Resolve domain to a specified address type
 export async function resolveSingleAddr(asset, resolver) {
     try {
-        if (!asset || !resolver) throw new ArgError();
+        if (arguments.length !== 2) throw new ArgError();
         let response = {};
-        let addr = "";
         logger.info(`Resolving ${asset} address record...`);
-        switch (asset) {
-            case 'btc':
-                addr = await resolver.getAddress(0);
-                logger.info(`Resolved ${asset} address: ${addr}`);
-                break;
-            case 'ltc':
-                addr = await resolver.getAddress(2);
-                logger.info(`Resolved ${asset} address: ${addr}`);
-                break;
-            case 'doge':
-                addr = await resolver.getAddress(3);
-                logger.info(`Resolved ${asset} address: ${addr}`);
-                break;
-            case 'eth':
-                addr = await resolver.getAddress(60);
-                logger.info(`Resolved ${asset} address: ${addr}`);
-                break;
-            default:
-                throw new AssetError(asset);
-        }
+        if (!COIN_NAMES.includes(asset)) throw new AssetError(asset);
+        const cIndex = COIN_NAMES.indexOf(asset);
+        const assetType = COIN_TYPES[cIndex];
+        const addr = await resolver.getAddress(assetType);
+        logger.info(`Resolved ${asset} address: ${addr}`);
         response['address'] = addr;
         return response;
     } catch(e) { throwProperly(e) }

@@ -41,7 +41,7 @@ export class AssetError extends Mistake {
 
 export class ArgError extends Mistake {
     constructor() {
-        super("Expected parameter not dound");
+        super("Expected parameter not found");
         this.code = 400;
     }
 }

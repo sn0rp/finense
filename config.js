@@ -26,7 +26,7 @@ export const config = {
         "3",
         "60"
     ],
-    "coin_names": [ // Ticker symbols corresponding to coin_types
+    "coin_names": [ // Ordered ticker symbols corresponding to coin_types
         "btc",
         "ltc",
         "doge",
