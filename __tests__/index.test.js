@@ -47,7 +47,7 @@ describe('index', () => {
                     }
                 ]
             }));
-        }, 30000);
+        }, 60000);
 
         it("should return all asset addresses for 'snorp.eth'", async () => {
             const expected = {
@@ -61,7 +61,7 @@ describe('index', () => {
             const addrs = await res.body;
             await expect(res.statusCode).toEqual(200);
             await expect(addrs).toEqual(expected);
-        }, 30000);
+        }, 60000);
 
         it("should return all asset balances for 'snorp.eth'", async () => {
             const res = await request(app)
@@ -74,7 +74,7 @@ describe('index', () => {
                 ltc: expect.any(String),
                 doge: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should return the avatar record for 'snorp.eth'", async () => {
             const expected = "https://gateway.ipfs.io/ipfs/Qmbkc7q1MASig2BpizCXwR4tUUq4GG7ubQ15VucAf1B5pq/493.png";
@@ -83,7 +83,7 @@ describe('index', () => {
             const url = await res.body.avatar;
             await expect(res.statusCode).toEqual(200);
             await expect(url).toBe(expected);
-        }, 30000);
+        }, 60000);
 
         it("should return the net worth of 'snorp.eth'", async () => {
             const res = await request(app)
@@ -93,7 +93,7 @@ describe('index', () => {
             await expect(body).toEqual(expect.objectContaining({
                 net: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should return all 'btc' data for 'snorp.eth'", async () => {
             const expected = "bc1q9x8660cp73x2v3lyvm6ua9gqwz6fy8gqhrsv06";
@@ -106,7 +106,7 @@ describe('index', () => {
                 balance: expect.any(String),
                 usd: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should return 'btc' address for 'snorp.eth'", async () => {
             const expected = { "address": "bc1q9x8660cp73x2v3lyvm6ua9gqwz6fy8gqhrsv06" }
@@ -115,7 +115,7 @@ describe('index', () => {
             const body = await res.body;
             await expect(res.statusCode).toEqual(200);
             await expect(body).toEqual(expected);
-        }, 30000);
+        }, 60000);
 
         it("should return 'btc' balance for 'snorp.eth'", async () => {
             const res = await request(app)
@@ -125,7 +125,7 @@ describe('index', () => {
             await expect(body).toEqual(expect.objectContaining({
                 balance: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should return 'btc' balance for 'snorp.eth' in USD", async () => {
             const res = await request(app)
@@ -135,14 +135,14 @@ describe('index', () => {
             await expect(body).toEqual(expect.objectContaining({
                 usd: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should return 'Coming soon!' for '/'", async () => {
             const res = await request(app).get('/');
             const body = await res.text;
             await expect(res.statusCode).toEqual(200);
             await expect(body).toEqual("Coming soon!");
-        }, 30000)
+        }, 60000)
     })
 
     describe('failure', () => {
@@ -157,7 +157,7 @@ describe('index', () => {
                 await expect(res.statusCode).toEqual(400);
                 await expect(body).toEqual("Route not allowed");
             }
-        }, 30000);
+        }, 60000);
 
         it("should return DomainError given invalid domain for relevant routes", async () => {
             const DomainErrorBody = `DomainError: Domain "snorp" not found or missing address records`
@@ -178,7 +178,7 @@ describe('index', () => {
                 await expect(res.statusCode).toEqual(404);
                 await expect(body).toEqual(DomainErrorBody);
             }
-        }, 30000);
+        }, 60000);
 
         it("should return AssetError given invalid asset for relevant routes", async () => {
             const AssetErrorBody = `AssetError: Asset "unsupported" is not supported`
@@ -194,6 +194,6 @@ describe('index', () => {
                 await expect(res.statusCode).toEqual(400);
                 await expect(body).toEqual(AssetErrorBody);
             }
-        }, 30000);
+        }, 60000);
     });
 });

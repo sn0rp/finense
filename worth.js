@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import 'dotenv/config';
+import { config } from './config.js';
 import {
     AssetError,
     throwProperly,
@@ -7,19 +7,11 @@ import {
 } from './errors.js';
 import logger from './logger.cjs';
 
-const NOW_NODES = process.env.NOW_NODES;
-const NN_URL = ".nownodes.io/api/v2/address/";
-const NN_SUFFIX = "?details=basic";
-
-const BOOKS = new Map([
-    ["btc", "https://btcbook"],
-    ["ltc", "https://ltcbook"],
-    ["doge", "https://dogebook"],
-    ["eth", "https://eth-blockbook"]
-]);
-
-const BA_PREFIX = "https://api.blockchain.com/v3/exchange/tickers/";
-
+const NOW_NODES = config.NOW_NODES;
+const NN_URL = config.NN_URL;
+const NN_SUFFIX = config.NN_SUFFIX;
+const BOOKS = config.BOOKS;
+const BA_PREFIX = config.BA_PREFIX;
 
 // Iterate over address map to find amounts owned
 export async function getAmounts(addresses) {
@@ -28,8 +20,8 @@ export async function getAmounts(addresses) {
         const amounts = new Map();
         logger.info("Getting amounts owned for all addresses...");
         for (const [key, val] of addresses) {
-            if (BOOKS.has(key)) {
-                const fullURL = `${BOOKS.get(key)}${NN_URL}${val}${NN_SUFFIX}`;
+            if (BOOKS[key]) {
+                const fullURL = `${BOOKS[key]}${NN_URL}${val}${NN_SUFFIX}`;
                 const response = await fetch(fullURL, {
                     method: 'GET',
                     headers: {
@@ -86,8 +78,8 @@ export async function getSingleAmount(asset, address) {
         let response = {};
         let amount = "";
         logger.info(`Getting amount of ${asset} owned by address ${address}`);
-        if (BOOKS.has(asset)) {
-            const fullURL = `${BOOKS.get(asset)}${NN_URL}${address}${NN_SUFFIX}`;
+        if (BOOKS[asset]) {
+            const fullURL = `${BOOKS[asset]}${NN_URL}${address}${NN_SUFFIX}`;
             const response = await fetch(fullURL, {
                 method: 'GET',
                 headers: {

@@ -1,13 +1,13 @@
 import express from 'express';
 import helmet from 'helmet';
 import { default as pinoHTTP } from 'pino-http';
-import 'dotenv/config';
 import * as resolve from './resolve.js';
 import * as worth from './worth.js';
 import logger from './logger.cjs';
+import { config } from './config.js';
 import { show } from './errors.js';
 
-const PORT = process.env.PORT;
+const PORT = config.PORT;
 
 export const app = express()
 

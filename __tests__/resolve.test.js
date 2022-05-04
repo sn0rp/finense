@@ -4,15 +4,15 @@ describe('resolve', () => {
     describe('resolve.init', () => {
         it("should return a resolver for 'snorp.eth'", async () => {
             await expect(resolve.init("snorp.eth")).toBeTruthy;
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: DomainError for 'snorp'", async () => {
             await expect(resolve.init("snorp")).rejects.toThrow("DomainError");
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing argument", async () => {
             await expect(resolve.init()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 
     describe('resolve.resolveAvatar', () => {
@@ -21,18 +21,18 @@ describe('resolve', () => {
             const avatar = await resolve.resolveAvatar(resolver);
             const expected = "https://gateway.ipfs.io/ipfs/Qmbkc7q1MASig2BpizCXwR4tUUq4GG7ubQ15VucAf1B5pq/493.png";
             await expect(avatar).toBe(expected);
-        }, 30000);
+        }, 60000);
 
         it("should return null for 'superman.eth'", async () => {
             const resolver = await resolve.init("superman.eth");
             const avatar = await resolve.resolveAvatar(resolver);
             await expect(avatar).toBeNull();
-        }, 30000);
+        }, 60000);
 
         it("should return null for missing argument", async () => {
             const avatar = await resolve.resolveAvatar();
             await expect(avatar).toBeNull();
-        }, 30000);
+        }, 60000);
     });
 
     /*
@@ -53,11 +53,11 @@ describe('resolve', () => {
             const resolver = await resolve.init("snorp.eth");
             const addrs = await resolve.resolveAddrs(expectedCoins, resolver);
             await expect(addrs).toEqual(expectedAddrs);
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing arguments", async () => {
             await expect(resolve.resolveAddrs()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 
     describe('resolve.resolveSingleAddr', () => {
@@ -66,18 +66,18 @@ describe('resolve', () => {
             const resolver = await resolve.init("snorp.eth");
             const btc = await resolve.resolveSingleAddr("btc", resolver);
             await expect(btc).toEqual(expected);
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: AssetError for unsupported asset", async () => {
             const resolver = await resolve.init("snorp.eth");
             await expect(resolve.resolveSingleAddr("unsupported", resolver))
                 .rejects.toThrow("AssetError");
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing arguments", async () => {
             const resolver = await resolve.init("snorp.eth");
             await expect(resolve.resolveSingleAddr()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 
     describe('resolve.getCoinTypes', () => {
@@ -85,14 +85,14 @@ describe('resolve', () => {
             const expected = ['60', '0', '2', '3', '5', '148', '128'];
             const coinTypes = await resolve.getCoinTypes("snorp.eth");
             await expect(coinTypes).toEqual(expected);
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: DomainError for 'snorp'", async () => {
             await expect(resolve.getCoinTypes("snorp")).rejects.toThrow("DomainError");
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing argument", async () => {
             await expect(resolve.getCoinTypes()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 });

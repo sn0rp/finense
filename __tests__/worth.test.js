@@ -11,11 +11,11 @@ describe('worth', () => {
             ]);
             const amounts = await worth.getAmounts(addrs);
             await expect(amounts).toBeInstanceOf(Map);
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing argument", async () => {
             await expect(worth.getAmounts()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 
     describe('worth.getSingleAmount', () => {
@@ -25,16 +25,16 @@ describe('worth', () => {
             await expect(amount).toEqual(expect.objectContaining({
                 balance: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: AssetError for unsupported asset", async () => {
             await expect(worth.getSingleAmount("unsupported", "whatever"))
                 .rejects.toThrow("AssetError");
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing arguments", async () => {
             await expect(worth.getSingleAmount()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 
     describe('worth.toFiat', () => {
@@ -43,15 +43,15 @@ describe('worth', () => {
             await expect(fiat).toEqual(expect.objectContaining({
                 usd: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: AssetError for unsupported asset", async () => {
             await expect(worth.toFiat("unsupported", "1")).rejects.toThrow("AssetError");
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing arguments", async () => {
             await expect(worth.toFiat()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 
     describe('worth.netWorth', () => {
@@ -66,10 +66,10 @@ describe('worth', () => {
             await expect(net).toEqual(expect.objectContaining({
                 net: expect.any(String)
             }));
-        }, 30000);
+        }, 60000);
 
         it("should throw AppError: ArgError for missing argument", async () => {
             await expect(worth.netWorth()).rejects.toThrow("ArgError");
-        }, 30000);
+        }, 60000);
     });
 });

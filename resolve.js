@@ -1,7 +1,7 @@
 import ethers from 'ethers';
 import fetch from 'node-fetch';
-import 'dotenv/config';
 import logger from './logger.cjs';
+import { config } from './config.js';
 import {
     ArgError,
     AssetError,
@@ -10,8 +10,8 @@ import {
     throwProperly
 } from './errors.js';
 
-const INFURA_ID = process.env.INFURA_ID;
-const INFURA_SECRET = process.env.INFURA_SECRET;
+const INFURA_ID = config.INFURA_ID;
+const INFURA_SECRET = config.INFURA_SECRET;
 
 // Connect to Ethereum Mainnet using Infura
 const provider = new ethers.providers.InfuraProvider("homestead", {
