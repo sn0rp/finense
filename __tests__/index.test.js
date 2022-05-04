@@ -136,20 +136,14 @@ describe('index', () => {
                 usd: expect.any(String)
             }));
         }, 60000);
-
-        it("should return 'Coming soon!' for '/'", async () => {
-            const res = await request(app).get('/');
-            const body = await res.text;
-            await expect(res.statusCode).toEqual(200);
-            await expect(body).toEqual("Coming soon!");
-        }, 60000)
-    })
+    });
 
     describe('failure', () => {
         it("should return 'Route not allowed' for invalid routes", async () => {
             const routes = [
                 '/domain',
-                '/doman'
+                '/doman',
+                '/'
             ];
             for (const route of routes) {
                 const res = await request(app).get(route);

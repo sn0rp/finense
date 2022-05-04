@@ -158,13 +158,9 @@ app.get('/domain/:domain/:asset/fiat', async (req, res, next) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.status(200).send("Coming soon!");
-}) 
-
 app.get('*', (req, res) => {
     res.status(400).send("Route not allowed");
-}) 
+});
 
 app.use(pinoHTTP());;
 app.use(helmet());
