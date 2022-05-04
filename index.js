@@ -9,7 +9,7 @@ import { show } from './errors.js';
 
 const PORT = config.PORT;
 
-export const app = express()
+export const app = express();
 
 // Return all data (domain, addresses, amounts owned, fiat values, net worth)
 app.get('/domain/:domain', async (req, res, next) => {
