@@ -22,27 +22,27 @@
 - [License](#license)
 
 ## About
-*Finense* aims to simplify the process of evaluating one's cryptocurrency portfolio using ENS domains. The original goal of this software was to evaluate a domain's "Net Worth" in USD; this goal has been satisfied with regard to major cryptocurrency assets. This software is *not* built to allow any modification of ENS or blockchain data and only `GET` requests are supported. Functionality is delivered in the form of an API, however there is currently no public deployment.
+*Finense* is an API which simplifies the process of evaluating one's cryptocurrency portfolio for ENS domain registrants. The original goal of this software was to evaluate a domain's "Net Worth" in USD; this goal has been satisfied with regard to major cryptocurrency assets. This software is *not* built to allow any modification of ENS or other blockchain data and only `GET` requests are supported. Functionality is delivered in the form of a self-hosted API. I do intend to utilize the lessons learned here within a more robust portfolio analysis application in the distant future, however I make no public commitment at this time.
 
 This software was created to meet a personal need, although the utility is self-evident.
 
 ## Setup
-These directions assume the user will deploy on a Debian server with Docker. If you just want to run the software with Node, you can simply clone this repository, create the required environment variables (Step 4 below), and run `npm run start`. If you already have Docker and Screen installed, you can skip to Step 4.
+These directions assume the user will deploy on a Debian server with Docker. If you just want to run the software with Node, you can simply clone this repository, create the required environment variables (Step 4), and run `npm run start`. If you already have Docker and Screen installed, skip to Step 4.
 
 1. Deploy a new Debian server, if applicable.
-2. Uninstall outdated versions of Docker
+2. Uninstall outdated versions of Docker (this step taken from Docker documentation)
 ```bash
 apt remove docker docker-engine docker.io containerd runc
 ```
-3. Install Docker, Git, Screen
+3. Install Docker, Git, Screen (this step taken from Docker documentation)
 ```bash
 apt update
 
 apt install ca-certificates curl gnupg lsb-release
 
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin screen git
 ```
@@ -53,9 +53,9 @@ git clone https://github.com/snorper/finense
 cd finense
 
 cat >> ./.env<< EOF
-INFURA_ID=""
-INFURA_SECRET=""
-NOW_NODES=""
+INFURA_ID=     ***FILL THIS IN***
+INFURA_SECRET= ***FILL THIS IN***
+NOW_NODES=     ***FILL THIS IN***
 PORT=5000
 NODE_ENV="production"
 EOF
@@ -65,6 +65,9 @@ Regarding the above environment variables:
 - INFURA_SECRET is your *Infura Project Secret*.
 - NOW_NODES is your *NOWNodes API Key*.
 - PORT is the port on which the API will listen (default 5000).
+
+Undisclosed environment variables are to be supplied by the user in a local deployment. Replace `***FILL THIS IN***` with the relevant information, in quotes with no spaces.
+
 5. Run Finense
 ```bash
 screen -S finense
@@ -76,19 +79,43 @@ docker compose up
 - To stop finense, run `screen -X -S finense quit`.
 
 ## Usage
-Proper documentation is forthcoming, so allowed routes are listed here with brief descriptions in the meantime:
+If you followed the suggested steps from Setup, the API is now accessible at [localhost:5000](http://localhost:5000). All endpoints and errors are fully documented at [docs.finense.snorp.dev](https://docs.finense.snorp.dev). As an example, sending a `GET` request or otherwise navigating to [http://localhost:5000/domain/snorp.eth](http://localhost:5000/domain/vitalik.eth) returns the following response:
+```json
+{
+    "domain": "snorp.eth",
+    "avatar": "https://gateway.ipfs.io/ipfs/Qmbkc7q1MASig2BpizCXwR4tUUq4GG7ubQ15VucAf1B5pq/493.png",
+    "net": "4726.272173353719",
+    "assets": [
+        {
+            "name": "eth",
+            "address": "0x0FA6273Ce887D26622698eAbc9311597fC66a351",
+            "balance": "0.8440922705248084",
+            "usd": "2338.1355893537193"
+        },
+        {
+            "name": "btc",
+            "address": "bc1q9x8660cp73x2v3lyvm6ua9gqwz6fy8gqhrsv06",
+            "balance": "0.06419722",
+            "usd": "2388.136584"
+        },
+        {
+            "name": "ltc",
+            "address": "ltc1qlf0s82v7ywvnf52c0jk9ejx6qfsragk58pgvmp",
+            "balance": "0",
+            "usd": "0"
+        },
+        {
+            "name": "doge",
+            "address": "D6LVbmQM3UQmvwFnWX8VKECJH7ySNnYzX9",
+            "balance": "0",
+            "usd": "0"
+        }
+    ]
+}
+```
+Informational messages and errors are logged to `finense.log` in the project root directory. If you make regular use of this software, you may want to occasionally delete that file using `cron` or a similar tool.
 
-- `/domain/{your domain}`: all data exposed by other routes
-- `/domain/{your domain}/address`: all supported address records
-- `/domain/{your domain}/amount`: balances for all supported address records
-- `/domain/{your domain}/avatar`: avatar url (null if not applicable)
-- `/domain/{your domain}/net`: net worth of supported address records
-- `/domain/{your domain}/{asset ticket}`: address, balance, and USD value for a specific asset
-- `/domain/{your domain}/{asset ticket}/address`: address for a specific asset
-- `/domain/{your domain}/{asset ticket}/amount`: balance for a specific asset
-- `/domain/{your domain}/{asset ticket}/fiat`: USD value of balance for a specific asset
-
-Note that this API currently supports four assets: btc, ltc, eth, doge.
+Note that this API supports four assets: btc, ltc, eth, and doge. Support for additional assets would require additional upstream API dependencies, which explains why it is common to support just these four. I do not intend to integrate any additional APIs, but feedback is welcome.
 
 ## Dependencies
 Proper functionality is dependent upon other upstream APIs remaining accessible. If at any time these APIs cannot be reached, *Finense* is expected to return an "UpstreamError" with status code 502. Beyond this, all routes and underlying functions are tested. Errors should only be returned if the user supplies a dissallowed or misspelled request.
@@ -121,7 +148,7 @@ Proper functionality is dependent upon other upstream APIs remaining accessible.
     - [X] Implement all necessary tests
     - [X] Automate testing with GitHub workflows
 - [X] Implement Docker
-- [ ] Fully document API
+- [X] Fully document API
 
 ## License
 All original software within this repository is licensed under the GPL-3.0 License.
