@@ -79,7 +79,7 @@ docker compose up
 - To stop finense, run `screen -X -S finense quit`.
 
 ## Usage
-If you followed the suggested steps from Setup, the API is now accessible at [localhost:5000](http://localhost:5000). All endpoints and errors are fully documented at [docs.finense.snorp.dev](https://docs.finense.snorp.dev). As an example, sending a `GET` request or otherwise navigating to [http://localhost:5000/domain/snorp.eth](http://localhost:5000/domain/vitalik.eth) returns the following response:
+If you followed the suggested steps from Setup, the API is now accessible at [localhost:5000](http://localhost:5000). All endpoints and errors are fully documented at `docs/index.md` in this repository, linked [here](https://github.com/Snorper/finense/blob/master/docs/index.md). As an example, sending a `GET` request or otherwise navigating to [http://localhost:5000/domain/snorp.eth](http://localhost:5000/domain/snorp.eth) returns the following response:
 ```json
 {
     "domain": "snorp.eth",
