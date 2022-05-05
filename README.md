@@ -1,5 +1,5 @@
-<h1 align="center">FinENSe</h1>
-<div align="center"><img alt="finense logo" style="width:56.25%; height: auto" src="finense_new_logo.png"></div>
+<h1 align="center"><i>FINENSE</i></h1>
+<div align="center"><img alt="finense logo" style="width: 50%; height: auto" src="finense_logo.png"></div>
 <p align ="center">
   <i>RESTful API to aggregate ENS records and estimate net worth</i>
 </p>
@@ -12,25 +12,71 @@
   <a href="https://github.com/Snorper/finense/watchers"><img alt="GitHub Watchers" src="https://img.shields.io/github/watchers/snorper/finense?style=social"></a>
 </div>
 
-## Notes on Version 2
-The original implementation of this software was written in Go and reliant on `go-ens`, which unfortunately was not suitable for the necessary functionality. Version 2 instead uses `ethers.js` to interact with the Ethereum Name Service. Initial development of the JavaScript implementation was done in a [separate repository](https://github.com/snorper/finense-old), now archived, until it approximately reached feature parity with Version 1. Please see that repository for preliminary commits on this version, or older commits in this repository for the antiquated Go implementation.
-
 ## Table of Contents
-- [Notes on Version 2](#notes-on-version-2)
-- [Purpose](#purpose)
+- [About](#about)
+- [Setup](#setup)
 - [Usage](#usage)
 - [Dependencies](#dependencies)
 - [Self-Hosting](#self-hosting)
 - [Roadmap](#roadmap)
 - [License](#license)
 
-## Purpose
-*Finense* aims to simplify the process of evaluating one's cryptocurrency portfolio using ENS domains. As of now, the intent is to provide both an API and a convenient web frontend to display information regarding supported assets. The original goal of this software was to evaluate a domain's "Net Worth" in USD; this goal has been satisfied. This software is *not* built to allow any modification of ENS or blockchain data and only `GET` requests are supported.
+## About
+*Finense* aims to simplify the process of evaluating one's cryptocurrency portfolio using ENS domains. The original goal of this software was to evaluate a domain's "Net Worth" in USD; this goal has been satisfied with regard to major cryptocurrency assets. This software is *not* built to allow any modification of ENS or blockchain data and only `GET` requests are supported. Functionality is delivered in the form of an API, however there is currently no public deployment.
 
 This software was created to meet a personal need, although the utility is self-evident.
 
+## Setup
+These directions assume the user will deploy on a Debian server with Docker. If you just want to run the software with Node, you can simply clone this repository, create the required environment variables (Step 4 below), and run `npm run start`. If you already have Docker and Screen installed, you can skip to Step 4.
+
+1. Deploy a new Debian server, if applicable.
+2. Uninstall outdated versions of Docker
+```bash
+apt remove docker docker-engine docker.io containerd runc
+```
+3. Install Docker, Git, Screen
+```bash
+apt update
+
+apt install ca-certificates curl gnupg lsb-release
+
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin screen git
+```
+4. Download and configure Finense
+```bash
+git clone https://github.com/snorper/finense
+
+cd finense
+
+cat >> ./.env<< EOF
+INFURA_ID=""
+INFURA_SECRET=""
+NOW_NODES=""
+PORT=5000
+NODE_ENV="production"
+EOF
+```
+Regarding the above environment variables:
+- INFURA_ID is your *Infura Project ID*.
+- INFURA_SECRET is your *Infura Project Secret*.
+- NOW_NODES is your *NOWNodes API Key*.
+- PORT is the port on which the API will listen (default 5000).
+5. Run Finense
+```bash
+screen -S finense
+
+docker compose up
+```
+- To exit and leave finense running, press `CTRL+A` and then `D`.
+- To return after exiting, run `screen -r finense`.
+- To stop finense, run `screen -X -S finense quit`.
+
 ## Usage
-A public implementation of the API with proper documentation is forthcoming, so allowed routes are listed here with brief descriptions in the meantime:
+Proper documentation is forthcoming, so allowed routes are listed here with brief descriptions in the meantime:
 
 - `/domain/{your domain}`: all data exposed by other routes
 - `/domain/{your domain}/address`: all supported address records
@@ -74,7 +120,7 @@ Proper functionality is dependent upon other upstream APIs remaining accessible.
     - [X] Implement proper logging
     - [X] Implement all necessary tests
     - [X] Automate testing with GitHub workflows
-- [ ] Implement Docker
+- [X] Implement Docker
 - [ ] Fully document API
 
 ## License
